@@ -14,8 +14,20 @@
   "contributes": {
     "commands": [
       {
-        "command": "knorkscursorlesskeyboardconfig.helloWorld",
+        "command": "kckc.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "kckc.selectMark",
+        "title": "selectMark"
+      },
+      {
+        "command": "kckc.modeOn",
+        "title": "modeOn"
+      },
+      {
+        "command": "kckc.modeOff",
+        "title": "modeOff"
       }
     ]
   },
