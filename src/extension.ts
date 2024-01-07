@@ -3,8 +3,11 @@
 import * as vscode from 'vscode';
 import { StatusBarItem } from './StatusBarItem';
 import KeyboardHandler from './KeyboardHandler';
-import { TargetMark } from './TargetMark';
-import { log } from 'console';
+import { TargetMark } from './commands/setTarget';
+import { clear, log } from 'console';
+import { setTargetScope } from './commands/setScope';
+import { clearTargets, performActionOnTarget } from './executeCursorlessCommand';
+import { setRelative } from './commands/setRelative';
 
 
 export function setMode(mode: boolean) {
@@ -38,10 +41,29 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.selectMark', targetMark.selectMark);
 	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('kckc.setTargetScope', setTargetScope);
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.clearTargets', clearTargets);
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.performAction', performActionOnTarget);
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.setRelative', setRelative);
+	context.subscriptions.push(disposable);
+
+
 	disposable = vscode.commands.registerCommand('kckc.modeOn', () => { setMode( true); });
 	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.modeOff', () => { setMode(false); });
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.modeToggle', () => {
+		const mode = vscode.workspace.getConfiguration("kckc").get("mode");
+		setMode(!mode);
+	});
 	context.subscriptions.push(disposable);
 
 	
