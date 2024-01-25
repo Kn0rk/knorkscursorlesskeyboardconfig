@@ -1,7 +1,10 @@
 {
   "name": "knorkscursorlesskeyboardconfig",
   "displayName": "knorkscursorlesskeyboardconfig",
-  "description": "",
+  "description": "A buggy extension with my attempt at a cursorless keyboard config",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kn0rk/knorkscursorlesskeyboardconfig"},
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.85.0"
@@ -30,6 +33,11 @@
         "title": "performAction"
       },
       {
+        "command": "kckc.setTargetMode",
+        "title": "setTargetMode"
+      },
+
+      {
         "command": "kckc.setRelative",
         "title": "setRelative"
       },
@@ -46,18 +54,26 @@
         "title": "modeToggle"
       },
       {
+        "command": "kckc.targetPairedDelimiter",
+        "title": "targetPairedDelimiter"
+      },
+      {
         "command": "kckc.clearTargets",
         "title": "clearTargets"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
+    
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "package": "pnpm vsce package --no-dependencies",
+    "publish": "pnpm vsce publish --no-dependencies",
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",

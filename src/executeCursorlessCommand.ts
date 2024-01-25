@@ -4,9 +4,14 @@ import { Modifier, PartialPrimitiveTargetDescriptor, PartialTargetDescriptor, Sc
 import { setLength, setOffset } from './commands/setRelative';
 
 var currentTargets: PartialPrimitiveTargetDescriptor[] = [];
-type TargetMode = "replace" | "range" | "list";
+var rangeAnchor: PartialPrimitiveTargetDescriptor | undefined;
+export type TargetMode = "replace" | "range" | "list";
 var targetMode: TargetMode = 'replace';
 
+export function setTargetMode(mode: TargetMode) {
+    rangeAnchor = currentTargets[currentTargets.length - 1];
+    targetMode = mode;
+}
 
 function runCursorlessCommand(action: ActionDescriptor) {
     var command = {
@@ -86,8 +91,8 @@ export function getCompositeTarget(): PartialTargetDescriptor {
         case "range": {
             compositeTarget = {
                 type: "range",
-                anchor: currentTargets[0],
-                active: currentTargets[1],
+                anchor: rangeAnchor!,
+                active: currentTargets[currentTargets.length - 1],
                 excludeAnchor: false,
                 excludeActive: false,
             };
@@ -128,9 +133,9 @@ export function clearTargets() {
           },
         },
       ];
+    targetMode = "replace";
     highlightCurrentTargets();
     currentTargets = [];
-    targetMode = "replace";
     whenStateUntilNextAction.forEach(state => {
         vscode.commands.executeCommand("setContext", "kckc."+state, false);
     });

@@ -20,8 +20,9 @@ export class TargetMark {
         // keyboard shortcuts will be disabled while the user is selecting a mark
         
         setMode(false);
+
         const options:DisplayOptions = {
-            cursorStyle:vscode.TextEditorCursorStyle.Line,
+            cursorStyle:vscode.TextEditorCursorStyle.Underline,
             statusBarText:"Select Mark"};
 
         this.keyboardHandler.awaitSingleKeypress(options).then((text:string|undefined) => {
@@ -34,7 +35,7 @@ export class TargetMark {
     }
 
     handleInput(text:string, colorShape:string) {
-        setMode(true);
+
 
     var target:PartialPrimitiveTargetDescriptor = {
         "type": "primitive",
@@ -45,7 +46,7 @@ export class TargetMark {
         }
     };
     addTarget(target);
-
+    setMode(true);
     }
 
     removeListener(){

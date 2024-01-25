@@ -5,10 +5,17 @@ import { Modifier, SimpleScopeType } from "../types/PartialTargetDescriptor.type
 
 var offset: number = 0;
 var length: number = 1;
-
+var lastScopeType: SimpleScopeType | null = null;
 
 type Direction = "forward" | "backward";
 export function setRelative(direction: Direction) {
+
+    var scopeType: SimpleScopeType = getSimpleScopeType();
+    if (lastScopeType !== null && lastScopeType.type !== scopeType.type) {
+        offset = 0;
+        length = 1;        
+    }
+
     if (direction === "forward") {
         offset = offset + 1;
     }
@@ -24,10 +31,8 @@ export function setRelative(direction: Direction) {
         direction = "forward";
     }
 
-    
-
     setWhenStateUntilNextAction("relative");
-    var scopeType: SimpleScopeType = getSimpleScopeType();
+    
     var modifier: Modifier = {
         type: "relativeScope",
         scopeType: scopeType,
@@ -36,6 +41,7 @@ export function setRelative(direction: Direction) {
         direction: direction,
     };
     replaceModifierOfTheSameType(modifier);
+    lastScopeType = scopeType;
 }
 
 export function setLength(len: number) {

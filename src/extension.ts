@@ -6,13 +6,20 @@ import KeyboardHandler from './KeyboardHandler';
 import { TargetMark } from './commands/setTarget';
 import { clear, log } from 'console';
 import { setTargetScope } from './commands/setScope';
-import { clearTargets, performActionOnTarget } from './executeCursorlessCommand';
+import { clearTargets, performActionOnTarget, setTargetMode } from './executeCursorlessCommand';
 import { setRelative } from './commands/setRelative';
+import { targetPairedDelimiter } from './commands/pairedDelimiter';
 
-
+var g_mode = false;
 export function setMode(mode: boolean) {
 	// vscode.window.showInformationMessage(`Cursorless mode ${mode ? "on" : "off"}`);
+	g_mode = mode;
 	vscode.commands.executeCommand("setContext", "kckc.mode", mode);
+	let editor = vscode.window.activeTextEditor;
+	if (editor) {
+		editor.options.cursorStyle = mode ? vscode.TextEditorCursorStyle.BlockOutline : vscode.TextEditorCursorStyle.Line;
+	}
+
 }
 
 // This method is called when your extension is activated
@@ -25,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const statusBarItem = StatusBarItem.create("cursorless.showQuickPick");
 	const keyboardHandler = new KeyboardHandler(context, statusBarItem);
 	
-	const targetMark = new TargetMark(keyboardHandler);
+	const targetMarkInstance = new TargetMark(keyboardHandler);
 	keyboardHandler.init();
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -38,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.selectMark', targetMark.selectMark);
+	disposable = vscode.commands.registerCommand('kckc.selectMark', targetMarkInstance.selectMark);
 	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.setTargetScope', setTargetScope);
@@ -53,6 +60,9 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.setRelative', setRelative);
 	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('kckc.targetPairedDelimiter', targetPairedDelimiter);
+	context.subscriptions.push(disposable);
+
 
 	disposable = vscode.commands.registerCommand('kckc.modeOn', () => { setMode( true); });
 	context.subscriptions.push(disposable);
@@ -61,9 +71,11 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.modeToggle', () => {
-		const mode = vscode.workspace.getConfiguration("kckc").get("mode");
-		setMode(!mode);
+		setMode(!g_mode);
 	});
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.setTargetMode', setTargetMode);
 	context.subscriptions.push(disposable);
 
 	
