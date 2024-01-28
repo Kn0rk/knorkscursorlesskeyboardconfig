@@ -6,8 +6,9 @@
   "icon": "images/avatar.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kn0rk/knorkscursorlesskeyboardconfig"},
-  "version": "0.0.1",
+    "url": "https://github.com/Kn0rk/knorkscursorlesskeyboardconfig"
+  },
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -16,7 +17,9 @@
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
-  "extensionDependencies": ["pokey.command-server"],
+  "extensionDependencies": [
+    "pokey.command-server"
+  ],
   "contributes": {
     "commands": [
       {
@@ -39,7 +42,6 @@
         "command": "kckc.setTargetMode",
         "title": "setTargetMode"
       },
-
       {
         "command": "kckc.setRelative",
         "title": "setRelative"
@@ -67,7 +69,6 @@
     ]
   },
   "scripts": {
-    
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
