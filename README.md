@@ -1,4 +1,3 @@
-
 edit
 
 clearTarget on cursorMove
