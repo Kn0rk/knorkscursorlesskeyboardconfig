@@ -9,15 +9,18 @@ import { setTargetScope } from './commands/setScope';
 import { clearTargets, performActionOnTarget, setTargetMode } from './executeCursorlessCommand';
 import { setRelative } from './commands/setRelative';
 import { targetPairedDelimiter } from './commands/pairedDelimiter';
+import { setCursor } from './setCursor';
 
 var g_mode = false;
 export function setMode(mode: boolean) {
 	// vscode.window.showInformationMessage(`Cursorless mode ${mode ? "on" : "off"}`);
 	g_mode = mode;
 	vscode.commands.executeCommand("setContext", "kckc.mode", mode);
-	let editor = vscode.window.activeTextEditor;
-	if (editor) {
-		editor.options.cursorStyle = mode ? vscode.TextEditorCursorStyle.BlockOutline : vscode.TextEditorCursorStyle.Line;
+	if(mode){
+		setCursor(vscode.TextEditorCursorStyle.BlockOutline);
+	}
+	else{
+		setCursor(vscode.TextEditorCursorStyle.Line);
 	}
 
 }
