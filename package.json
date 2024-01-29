@@ -18,7 +18,11 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "extensionDependencies": [
-    "pokey.command-server"
+    "pokey.cursorless"
+  ],
+  "extensionKind": [
+    "ui",
+    "workspace"
   ],
   "contributes": {
     "commands": [
@@ -63,8 +67,12 @@
         "title": "targetPairedDelimiter"
       },
       {
-        "command": "kckc.clearTargets",
-        "title": "clearTargets"
+        "command": "kckc.setStart",
+        "title": "set Start"
+      },
+      {
+        "command": "kckc.setEnd",
+        "title": "setEnd"
       }
     ]
   },

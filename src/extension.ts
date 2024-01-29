@@ -10,6 +10,7 @@ import { clearTargets, performActionOnTarget, setTargetMode } from './executeCur
 import { setRelative } from './commands/setRelative';
 import { targetPairedDelimiter } from './commands/pairedDelimiter';
 import { setCursor } from './setCursor';
+// import { setEnd, setStart } from './commands/headTail';
 
 var g_mode = false;
 export function setMode(mode: boolean) {
@@ -81,6 +82,11 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.setTargetMode', setTargetMode);
 	context.subscriptions.push(disposable);
 
+	// disposable = vscode.commands.registerCommand('kckc.setEnd', setEnd);
+	// context.subscriptions.push(disposable);
+
+	// disposable = vscode.commands.registerCommand('kckc.setStart', setStart);
+	// context.subscriptions.push(disposable);
 	
 
 	

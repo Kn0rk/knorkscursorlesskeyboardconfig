@@ -171,11 +171,13 @@ export function replaceModifierOfTheSameType(modifier: Modifier){
     const modifiedTargets = [];
     var allTargets = getTargetsWithImplicitTarget();
     for (let curTarget of allTargets) {
-      if (curTarget === undefined) {
+      if (curTarget === undefined ) {
         continue;
       }
-        const mods:Modifier[]=curTarget.modifiers?.filter(mod=>mod.type===modifier.type)??[];
-        if (mods) {
+        // const mods:Modifier[]=curTarget.modifiers?.filter(mod=>mod.type===modifier.type)??[];
+        const curMods = curTarget.modifiers ?? [];
+
+        if (curMods.length >0 && curMods[curMods.length-1].type === modifier.type) {
             // remove the old modifier
             const modsDifferentType:Modifier[]=curTarget.modifiers?.filter(mod=>mod.type!==modifier.type)??[];
             modifiedTargets.push({
@@ -185,7 +187,6 @@ export function replaceModifierOfTheSameType(modifier: Modifier){
             });
         }
         else { // no modifier of the same type so just add it
-            var curMods = curTarget.modifiers ?? [];
             modifiedTargets.push({
                 type: curTarget.type,
                 modifiers: [...curMods, modifier],
@@ -199,7 +200,7 @@ export function replaceModifierOfTheSameType(modifier: Modifier){
 }
 
 
-export function performActionOnTarget(name: ActionType) {
+export function performActionOnTarget(name: ActionType,shouldClearTargets:boolean=true) {
     let returnValue: ActionDescriptor;
     var target= getCompositeTarget();
 
@@ -260,6 +261,8 @@ export function performActionOnTarget(name: ActionType) {
             };
     }
     runCursorlessCommand(returnValue);
-    clearTargets();
+    if( shouldClearTargets){
+        clearTargets();
+    }
     
 }
