@@ -25,7 +25,7 @@ function runCursorlessCommand(action: ActionDescriptor) {
 }
 
 function getTargetsWithImplicitTarget(): PartialPrimitiveTargetDescriptor[] {
-    var ret:PartialPrimitiveTargetDescriptor[] =[];
+    var ret: PartialPrimitiveTargetDescriptor[] = [];
     if (currentTargets.length === 0) {
         ret.push({
             type: "primitive",
@@ -39,13 +39,13 @@ function getTargetsWithImplicitTarget(): PartialPrimitiveTargetDescriptor[] {
     }
     return ret;
 }
-var whenStateUntilNextAction:string[]=[];
+var whenStateUntilNextAction: string[] = [];
 /**
  * Sets the specified when clause until the next action is performed or targets are cleared.
  * @param state The state to set.
  */
-export function setWhenStateUntilNextAction(state:string){
-    vscode.commands.executeCommand("setContext", "kckc."+state, true);
+export function setWhenStateUntilNextAction(state: string) {
+    vscode.commands.executeCommand("setContext", "kckc." + state, true);
     whenStateUntilNextAction = [...whenStateUntilNextAction, state];
 }
 
@@ -56,7 +56,7 @@ export function setSimpleScopeType(scopeType: SimpleScopeType) {
 
 export function getSimpleScopeType(): SimpleScopeType {
     if (simpleScopeType.length === 0) {
-        return {"type":"token"};
+        return { "type": "token" };
     }
     return simpleScopeType[simpleScopeType.length - 1];
 }
@@ -109,6 +109,18 @@ export function getCompositeTarget(): PartialTargetDescriptor {
     return compositeTarget;
 }
 function highlightCurrentTargets() {
+
+
+    var action: ActionDescriptor = {
+        name: "highlight",
+        target: {
+            type: "primitive",
+            mark: {
+                type: "nothing",
+            }
+        },
+    };
+    runCursorlessCommand(action);
     var compositeTarget = getCompositeTarget();
     var action: ActionDescriptor = {
         name: "highlight",
@@ -120,66 +132,66 @@ function highlightCurrentTargets() {
 
 
 export function addTarget(target: PartialPrimitiveTargetDescriptor) {
-    currentTargets= [...currentTargets, target];
+    currentTargets = [...currentTargets, target];
     highlightCurrentTargets();
 }
 
 export function clearTargets() {
     currentTargets = [
         {
-          type: "primitive",
-          mark: {
-            type: "nothing",
-          },
+            type: "primitive",
+            mark: {
+                type: "nothing",
+            },
         },
-      ];
+    ];
     targetMode = "replace";
     highlightCurrentTargets();
     currentTargets = [];
     whenStateUntilNextAction.forEach(state => {
-        vscode.commands.executeCommand("setContext", "kckc."+state, false);
+        vscode.commands.executeCommand("setContext", "kckc." + state, false);
     });
-    whenStateUntilNextAction=[];
-    simpleScopeType=[];
+    whenStateUntilNextAction = [];
+    simpleScopeType = [];
     setLength(1);
     setOffset(0);
 }
 
-export function addModifier(modifier: Modifier){
+export function addModifier(modifier: Modifier) {
     const modifiedTargets = [];
     var allTargets = getTargetsWithImplicitTarget();
     for (let curTarget of allTargets) {
-      if (curTarget === undefined) {
-        return;
-      }
-      const mods:Modifier[]=[modifier]
-      if ( curTarget.modifiers){
-        mods.push(...curTarget.modifiers)
-      }
-      curTarget = {
-        type: curTarget.type,
-        modifiers: mods,
-        mark: curTarget.mark,
-      };
+        if (curTarget === undefined) {
+            return;
+        }
+        const mods: Modifier[] = [modifier]
+        if (curTarget.modifiers) {
+            mods.push(...curTarget.modifiers)
+        }
+        curTarget = {
+            type: curTarget.type,
+            modifiers: mods,
+            mark: curTarget.mark,
+        };
         modifiedTargets.push(curTarget);
     }
     currentTargets = modifiedTargets;
     highlightCurrentTargets();
 }
 
-export function replaceModifierOfTheSameType(modifier: Modifier){
+export function replaceModifierOfTheSameType(modifier: Modifier) {
     const modifiedTargets = [];
     var allTargets = getTargetsWithImplicitTarget();
     for (let curTarget of allTargets) {
-      if (curTarget === undefined ) {
-        continue;
-      }
+        if (curTarget === undefined) {
+            continue;
+        }
         // const mods:Modifier[]=curTarget.modifiers?.filter(mod=>mod.type===modifier.type)??[];
         const curMods = curTarget.modifiers ?? [];
 
-        if (curMods.length >0 && curMods[curMods.length-1].type === modifier.type) {
+        if (curMods.length > 0 && curMods[curMods.length - 1].type === modifier.type) {
             // remove the old modifier
-            const modsDifferentType:Modifier[]=curTarget.modifiers?.filter(mod=>mod.type!==modifier.type)??[];
+            const modsDifferentType: Modifier[] = curTarget.modifiers?.filter(mod => mod.type !== modifier.type) ?? [];
             modifiedTargets.push({
                 type: curTarget.type,
                 modifiers: [...modsDifferentType, modifier],
@@ -200,9 +212,9 @@ export function replaceModifierOfTheSameType(modifier: Modifier){
 }
 
 
-export function performActionOnTarget(name: ActionType,shouldClearTargets:boolean=true) {
+export function performActionOnTarget(name: ActionType, shouldClearTargets: boolean = true) {
     let returnValue: ActionDescriptor;
-    var target= getCompositeTarget();
+    var target = getCompositeTarget();
 
     switch (name) {
         case "wrapWithPairedDelimiter":
@@ -216,7 +228,7 @@ export function performActionOnTarget(name: ActionType,shouldClearTargets:boolea
             throw Error(`Unsupported keyboard action: ${name}`);
         case "replaceWithTarget":
         case "moveToTarget":
-            returnValue={
+            returnValue = {
                 name,
                 source: target,
                 destination: { type: "implicit" },
@@ -224,21 +236,21 @@ export function performActionOnTarget(name: ActionType,shouldClearTargets:boolea
 
             break;
         case "swapTargets":
-            returnValue={
+            returnValue = {
                 name,
                 target1: target,
                 target2: { type: "implicit" },
             };
             break;
         case "callAsFunction":
-            returnValue={
+            returnValue = {
                 name,
                 callee: target,
                 argument: { type: "implicit" },
             };
             break;
         case "pasteFromClipboard":
-            returnValue={
+            returnValue = {
                 name,
                 destination: {
                     type: "primitive",
@@ -249,20 +261,20 @@ export function performActionOnTarget(name: ActionType,shouldClearTargets:boolea
             break;
         case "generateSnippet":
         case "highlight":
-            returnValue={
+            returnValue = {
                 name,
                 target,
             };
             break;
         default:
-            returnValue={
+            returnValue = {
                 name,
                 target,
             };
     }
     runCursorlessCommand(returnValue);
-    if( shouldClearTargets){
+    if (shouldClearTargets) {
         clearTargets();
     }
-    
+
 }

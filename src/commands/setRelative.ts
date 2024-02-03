@@ -27,7 +27,7 @@ export function setRelative(direction: Direction) {
         direction = "backward";
         off = -offset;
     }
-    if (offset > 0) {
+    if (offset >= 0) {
         direction = "forward";
     }
 
