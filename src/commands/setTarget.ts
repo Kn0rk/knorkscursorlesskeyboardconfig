@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { setMode } from "../extension";
 import { addTarget } from "../executeCursorlessCommand";
 import { ActionDescriptor } from "../types/ActionDescriptor";
-import { PartialPrimitiveTargetDescriptor, PartialTargetDescriptor } from "../types/PartialTargetDescriptor.types";
+import { DecoratedSymbolMark, PartialPrimitiveTargetDescriptor, PartialTargetDescriptor } from "../types/PartialTargetDescriptor.types";
 
 
 export class TargetMark {
@@ -37,13 +37,10 @@ export class TargetMark {
     handleInput(text:string, colorShape:string) {
 
 
-    var target:PartialPrimitiveTargetDescriptor = {
-        "type": "primitive",
-        "mark": {
+    var target:DecoratedSymbolMark = {        
             "type": "decoratedSymbol",
             "symbolColor": colorShape,
             "character": text,
-        }
     };
     addTarget(target);
     setMode(true);

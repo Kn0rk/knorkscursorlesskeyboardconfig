@@ -72,6 +72,7 @@ const simpleActionNames = [
   "unfoldRegion",
   "private.showParseTree",
   "private.getTargets",
+  "private.setKeyboardTarget",
 ] as const;
 
 const complexActionNames = [

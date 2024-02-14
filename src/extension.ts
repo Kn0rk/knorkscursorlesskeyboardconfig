@@ -10,6 +10,7 @@ import { clearTargets, performActionOnTarget, setTargetMode } from './executeCur
 import { setRelative } from './commands/setRelative';
 import { targetPairedDelimiter } from './commands/pairedDelimiter';
 import { setCursor } from './setCursor';
+import { decoration } from './decorator';
 // import { setEnd, setStart } from './commands/headTail';
 
 var g_mode = false;
@@ -88,6 +89,23 @@ export function activate(context: vscode.ExtensionContext) {
 	// disposable = vscode.commands.registerCommand('kckc.setStart', setStart);
 	// context.subscriptions.push(disposable);
 	
+	// when cursor moves, clear the targets
+	vscode.window.onDidChangeTextEditorSelection(() => {
+		decoration(context);
+	});
+	let activeEditor = vscode.window.activeTextEditor;
+	vscode.window.onDidChangeActiveTextEditor(editor => {
+		activeEditor = editor;
+		if (editor) {
+			decoration(context);
+		}
+	}, null, context.subscriptions);
+
+	vscode.workspace.onDidChangeTextDocument(event => {
+		if (activeEditor && event.document === activeEditor.document) {
+			decoration(context);
+		}
+	}, null, context.subscriptions);
 
 	
 }
