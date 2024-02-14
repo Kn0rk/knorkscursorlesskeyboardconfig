@@ -5,10 +5,10 @@ import { Modifier, SimpleScopeType, SimpleScopeTypeType } from "../types/Partial
 
 type Direction = "forward" | "backward";
 export function setRelative(args:any[]) {
+    console.log("called")
     var direction: Direction = args[0];
     var scopeType: SimpleScopeTypeType = args[1];
-
-
+    
     var off = 1;
 
     setWhenStateUntilNextAction("relative");

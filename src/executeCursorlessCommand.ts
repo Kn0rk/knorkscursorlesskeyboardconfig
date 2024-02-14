@@ -16,7 +16,7 @@ var activeRangeTarget: PartialRangeTargetDescriptor | undefined=undefined;
 // var currentTargets: PartialPrimitiveTargetDescriptor[] = [];
 // var rangeAnchor: PartialPrimitiveTargetDescriptor | undefined;
 export type TargetMode = "replace" | "range" | "list";
-var targetMode: TargetMode = 'replace';
+var targetMode: TargetMode = 'range';
 
 
 function getTarget(): PartialPrimitiveTargetDescriptor {
@@ -114,7 +114,13 @@ function highlightCurrentTargets() {
 
 
 export function addTarget(target: DecoratedSymbolMark) {
-    activeMark = target;
+    if (activeMark.type === "nothing"){
+        activeMark = target;
+        activeRangeAnchor = getTarget();
+    }else{
+        activeMark=  target;
+    }
+    
     highlightCurrentTargets();
 }
 
@@ -122,7 +128,7 @@ export function clearTargets() {
     activeModifiers = [];
     activeMark = { type: "nothing" };
     activeRangeAnchor = undefined;
-    targetMode = "replace";
+    targetMode = "range";
     activeRangeTarget = undefined;
 
     highlightCurrentTargets();

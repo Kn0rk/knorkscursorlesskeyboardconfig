@@ -68,16 +68,16 @@
         "title": "modeToggle"
       },
       {
+        "command": "kckc.endOf",
+        "title": "endOf"
+      },
+      {
         "command": "kckc.targetPairedDelimiter",
         "title": "targetPairedDelimiter"
       },
       {
-        "command": "kckc.setStart",
+        "command": "kckc.startOf",
         "title": "set Start"
-      },
-      {
-        "command": "kckc.setEnd",
-        "title": "setEnd"
       }
     ]
   },
