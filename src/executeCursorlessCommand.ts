@@ -1,15 +1,53 @@
 import * as vscode from 'vscode';
 import { ActionDescriptor, ActionType } from './types/ActionDescriptor';
-import { Modifier, PartialPrimitiveTargetDescriptor, PartialTargetDescriptor, ScopeType, SimpleScopeType } from './types/PartialTargetDescriptor.types';
-import { setLength, setOffset } from './commands/setRelative';
+import { DecoratedSymbolMark, ImplicitTargetDescriptor, Modifier, NothingMark, PartialListTargetDescriptor, PartialMark, PartialPrimitiveTargetDescriptor, PartialRangeTargetDescriptor, PartialTargetDescriptor, ScopeType, SimpleScopeType } from './types/PartialTargetDescriptor.types';
 
-var currentTargets: PartialPrimitiveTargetDescriptor[] = [];
-var rangeAnchor: PartialPrimitiveTargetDescriptor | undefined;
+
+
+
+var activeModifiers: Modifier[] = [];
+var activeMark: DecoratedSymbolMark | NothingMark = { type: "nothing" };
+
+var activeRangeAnchor: PartialPrimitiveTargetDescriptor | undefined=undefined;
+var activeRangeTarget: PartialRangeTargetDescriptor | undefined=undefined;
+// var activeListTarget: PrimitiveDestinationDescriptor|PartialRangeTargetDescriptor[] = [];
+
+
+// var currentTargets: PartialPrimitiveTargetDescriptor[] = [];
+// var rangeAnchor: PartialPrimitiveTargetDescriptor | undefined;
 export type TargetMode = "replace" | "range" | "list";
-var targetMode: TargetMode = 'replace';
+var targetMode: TargetMode = 'range';
+
+
+function getTarget(): PartialPrimitiveTargetDescriptor {
+    var mark: PartialMark = { ...activeMark};
+    if (activeMark.type === "nothing") {
+        mark = {type: "cursor"};
+    }
+    return {
+        type: "primitive",
+        mark: mark,
+        modifiers: [...activeModifiers],
+    };
+}
+
+function getRangeTarget(): PartialTargetDescriptor {
+    if (activeRangeAnchor === undefined) {
+     return getTarget();
+    }
+    return {
+        type: "range",
+        anchor: activeRangeAnchor,
+        active: getTarget(),
+        excludeAnchor: false,
+        excludeActive: false,
+    };
+}
+
+
 
 export function setTargetMode(mode: TargetMode) {
-    rangeAnchor = currentTargets[currentTargets.length - 1];
+    activeRangeAnchor = getTarget();
     targetMode = mode;
 }
 
@@ -21,24 +59,14 @@ function runCursorlessCommand(action: ActionDescriptor) {
     };
     var commandId = "cursorless.command";
     var args = [command];
-    vscode.commands.executeCommand(commandId, ...args).then(() => { });
+    try {
+        vscode.commands.executeCommand(commandId, ...args).then(() => { });
+    }
+    catch (e) {
+        console.log("Error running cursorless command: " + e);
+    }
 }
 
-function getTargetsWithImplicitTarget(): PartialPrimitiveTargetDescriptor[] {
-    var ret: PartialPrimitiveTargetDescriptor[] = [];
-    if (currentTargets.length === 0) {
-        ret.push({
-            type: "primitive",
-            mark: {
-                type: "cursor",
-            }
-        });
-    }
-    else {
-        ret = currentTargets;
-    }
-    return ret;
-}
 var whenStateUntilNextAction: string[] = [];
 /**
  * Sets the specified when clause until the next action is performed or targets are cleared.
@@ -62,57 +90,11 @@ export function getSimpleScopeType(): SimpleScopeType {
 }
 
 
-export function getCompositeTarget(): PartialTargetDescriptor {
-
-    if (currentTargets.length === 0) {
-        currentTargets.push({
-            type: "primitive",
-            mark: {
-                type: "cursor",
-            }
-        });
-    }
-
-    if (currentTargets.length === 1 && targetMode !== "replace") {
-        currentTargets.unshift({
-            type: "primitive",
-            mark: {
-                type: "cursor",
-            }
-        });
-    }
-    var compositeTarget: PartialTargetDescriptor;
-
-    switch (targetMode) {
-        case "replace": {
-            compositeTarget = currentTargets[currentTargets.length - 1];
-            break;
-        }
-        case "range": {
-            compositeTarget = {
-                type: "range",
-                anchor: rangeAnchor!,
-                active: currentTargets[currentTargets.length - 1],
-                excludeAnchor: false,
-                excludeActive: false,
-            };
-            break;
-        }
-        case "list": {
-            compositeTarget = {
-                type: "list",
-                elements: currentTargets,
-            };
-            break;
-        }
-    }
-    return compositeTarget;
-}
 function highlightCurrentTargets() {
 
 
     var action: ActionDescriptor = {
-        name: "highlight",
+        name: "private.setKeyboardTarget",
         target: {
             type: "primitive",
             mark: {
@@ -121,9 +103,9 @@ function highlightCurrentTargets() {
         },
     };
     runCursorlessCommand(action);
-    var compositeTarget = getCompositeTarget();
+    var compositeTarget = getRangeTarget();
     var action: ActionDescriptor = {
-        name: "highlight",
+        name: "private.setKeyboardTarget",
         target: compositeTarget,
     };
     runCursorlessCommand(action);
@@ -131,90 +113,49 @@ function highlightCurrentTargets() {
 
 
 
-export function addTarget(target: PartialPrimitiveTargetDescriptor) {
-    currentTargets = [...currentTargets, target];
+export function addTarget(target: DecoratedSymbolMark) {
+    if (activeMark.type === "nothing"){
+        activeMark = target;
+        activeRangeAnchor = getTarget();
+    }else{
+        activeMark=  target;
+    }
+    
     highlightCurrentTargets();
 }
 
 export function clearTargets() {
-    currentTargets = [
-        {
-            type: "primitive",
-            mark: {
-                type: "nothing",
-            },
-        },
-    ];
-    targetMode = "replace";
+    activeModifiers = [];
+    activeMark = { type: "nothing" };
+    activeRangeAnchor = undefined;
+    targetMode = "range";
+    activeRangeTarget = undefined;
+
     highlightCurrentTargets();
-    currentTargets = [];
+    // currentTargets = [];
     whenStateUntilNextAction.forEach(state => {
         vscode.commands.executeCommand("setContext", "kckc." + state, false);
     });
     whenStateUntilNextAction = [];
     simpleScopeType = [];
-    setLength(1);
-    setOffset(0);
+
 }
 
 export function addModifier(modifier: Modifier) {
-    const modifiedTargets = [];
-    var allTargets = getTargetsWithImplicitTarget();
-    for (let curTarget of allTargets) {
-        if (curTarget === undefined) {
-            return;
-        }
-        const mods: Modifier[] = [modifier]
-        if (curTarget.modifiers) {
-            mods.push(...curTarget.modifiers)
-        }
-        curTarget = {
-            type: curTarget.type,
-            modifiers: mods,
-            mark: curTarget.mark,
-        };
-        modifiedTargets.push(curTarget);
+    // activeModifiers = [...activeModifiers, modifier];
+    if (modifier.type === "containingScope") {
+        activeModifiers = [...activeModifiers, modifier];
     }
-    currentTargets = modifiedTargets;
+    activeModifiers = [modifier,...activeModifiers];
+    // activeModifiers.push(modifier);
     highlightCurrentTargets();
 }
 
-export function replaceModifierOfTheSameType(modifier: Modifier) {
-    const modifiedTargets = [];
-    var allTargets = getTargetsWithImplicitTarget();
-    for (let curTarget of allTargets) {
-        if (curTarget === undefined) {
-            continue;
-        }
-        // const mods:Modifier[]=curTarget.modifiers?.filter(mod=>mod.type===modifier.type)??[];
-        const curMods = curTarget.modifiers ?? [];
-
-        if (curMods.length > 0 && curMods[curMods.length - 1].type === modifier.type) {
-            // remove the old modifier
-            const modsDifferentType: Modifier[] = curTarget.modifiers?.filter(mod => mod.type !== modifier.type) ?? [];
-            modifiedTargets.push({
-                type: curTarget.type,
-                modifiers: [...modsDifferentType, modifier],
-                mark: curTarget.mark,
-            });
-        }
-        else { // no modifier of the same type so just add it
-            modifiedTargets.push({
-                type: curTarget.type,
-                modifiers: [...curMods, modifier],
-                mark: curTarget.mark,
-            });
-        }
-
-    }
-    currentTargets = modifiedTargets;
-    highlightCurrentTargets();
-}
 
 
 export function performActionOnTarget(name: ActionType, shouldClearTargets: boolean = true) {
     let returnValue: ActionDescriptor;
-    var target = getCompositeTarget();
+    var target = getRangeTarget();
 
     switch (name) {
         case "wrapWithPairedDelimiter":
@@ -255,7 +196,7 @@ export function performActionOnTarget(name: ActionType, shouldClearTargets: bool
                 destination: {
                     type: "primitive",
                     insertionMode: "to",
-                    target: getTargetsWithImplicitTarget()[getTargetsWithImplicitTarget().length - 1],
+                    target: getTarget(),
                 },
             };
             break;

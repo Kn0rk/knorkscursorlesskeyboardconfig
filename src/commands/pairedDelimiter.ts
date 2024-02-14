@@ -18,7 +18,7 @@ export function targetPairedDelimiter(
   const interiorOnly: InteriorOnlyModifier = {
     type: "interiorOnly",
     };
-    addModifier(scope);
     addModifier(interiorOnly);
+    addModifier(scope);
   }
   

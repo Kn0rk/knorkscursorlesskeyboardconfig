@@ -1,27 +1,29 @@
-// import { replaceModifierOfTheSameType, setTargetMode } from "../executeCursorlessCommand";
-// import { Modifier } from "../types/PartialTargetDescriptor.types";
-// import { setTargetScope } from "./setScope";
 
-// export function setEnd() {
-//     var modifier: Modifier = {
-//         type: "extendThroughEndOf",
-//     };
-//     // setTargetScope("line");
-//     setTargetMode("range");
+import { addModifier } from "../executeCursorlessCommand";
+import { Modifier } from "../types/PartialTargetDescriptor.types";
+import { setTargetScope } from "./setScope";
 
-//     var modifier: Modifier = {
-//         type: "relativeScope",
-//         scopeType: {type:"line"},
-//         offset: off,
-//         length: length,
-//         direction: direction,
-//     };
-//     replaceModifierOfTheSameType(modifier);
-// }
 
-// export function setStart() {
-//     var modifier: Modifier = {
-//         type: "startOf",
-//     };
-//     replaceModifierOfTheSameType(modifier);
-// }
+export function setEnd() {
+
+    setTargetScope("line");
+
+    let modifier: Modifier = {
+        type: "endOf",
+    };
+    // setTargetScope("line");
+    addModifier(modifier);
+}
+
+
+
+export function setStart() {
+
+    setTargetScope("line");
+
+    let modifier: Modifier = {
+        type: "startOf",
+    };
+    // setTargetScope("line");
+    addModifier(modifier);
+}

@@ -1,53 +1,27 @@
-import { get } from "http";
-import { addModifier, getCompositeTarget, getSimpleScopeType, replaceModifierOfTheSameType, setWhenStateUntilNextAction } from "../executeCursorlessCommand";
-import { Modifier, SimpleScopeType } from "../types/PartialTargetDescriptor.types";
+import { addModifier,  getSimpleScopeType, setWhenStateUntilNextAction } from "../executeCursorlessCommand";
+import { Modifier, SimpleScopeType, SimpleScopeTypeType } from "../types/PartialTargetDescriptor.types";
 
 
-var offset: number = 0;
-var length: number = 1;
-var lastScopeType: SimpleScopeType | null = null;
 
 type Direction = "forward" | "backward";
-export function setRelative(direction: Direction) {
-
-    var scopeType: SimpleScopeType = getSimpleScopeType();
-    if (lastScopeType !== null && lastScopeType.type !== scopeType.type) {
-        offset = 0;
-        length = 1;        
-    }
-
-    if (direction === "forward") {
-        offset = offset + 1;
-    }
-    else{
-        offset = offset - 1;
-    }
-    var off=offset;
-    if (offset < 0) {
-        direction = "backward";
-        off = -offset;
-    }
-    if (offset >= 0) {
-        direction = "forward";
-    }
+export function setRelative(args:any[]) {
+    console.log("called")
+    var direction: Direction = args[0];
+    var scopeType: SimpleScopeTypeType = args[1];
+    
+    var off = 1;
 
     setWhenStateUntilNextAction("relative");
     
     var modifier: Modifier = {
         type: "relativeScope",
-        scopeType: scopeType,
+        scopeType: {
+            type:scopeType
+        },
         offset: off,
-        length: length,
+        length: 1,
         direction: direction,
     };
-    replaceModifierOfTheSameType(modifier);
-    lastScopeType = scopeType;
-}
-
-export function setLength(len: number) {
-    length = len;
-}
-
-export function setOffset(off: number) {
-    offset = off;
+    // replaceModifierOfTheSameType(modifier);
+    addModifier(modifier);
 }
