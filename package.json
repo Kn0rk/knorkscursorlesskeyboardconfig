@@ -76,6 +76,10 @@
         "title": "targetPairedDelimiter"
       },
       {
+        "command": "kckc.setHat",
+        "title": "..."
+      },
+      {
         "command": "kckc.startOf",
         "title": "set Start"
       }

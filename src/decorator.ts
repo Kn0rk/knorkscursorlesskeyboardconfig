@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { splitDocument } from './hats/splitDocument';
-import { createDecoration } from './hats/createDecorations';
+import { DecoProto, createDecoration } from './hats/createDecorations';
+import { setHat } from './handler';
 
 
 let solid: vscode.TextEditorDecorationType|null = null;
@@ -13,7 +14,7 @@ export function decoration(context:vscode.ExtensionContext):void{
 	if (!activeEditor) {
 		return;
 	}
-
+	// remove old hats
 	if (solid){
 		solid.dispose();
 	}
@@ -33,21 +34,25 @@ export function decoration(context:vscode.ExtensionContext):void{
 	
 
 	const text = activeEditor.document.getText();
-	const cursorOffset = activeEditor.document.offsetAt(activeEditor.selection.active)
+	const cursorOffset = activeEditor.document.offsetAt(activeEditor.selection.active);
     const candidates = splitDocument(text,cursorOffset);
 	const deco = createDecoration(text,candidates);
+	deco.forEach((deco:DecoProto)=>{
+		setHat(deco.deco,deco.hat);
+	});
+	
 	
 
 	const solidDecor: vscode.DecorationOptions[] = [];
 	const doubleDecor: vscode.DecorationOptions[] = [];
 
 	for ( let i = 0; i<deco.length;i++){
-		const offset = deco[i].startOffset+deco[i].charOffset;
+		const offset = deco[i].hat.startOffset+deco[i].hat.charOffset;
 		const startPos = activeEditor.document.positionAt(offset);
 		const endPos = activeEditor.document.positionAt(offset + 1);
 
 		const decoration = { range: new vscode.Range(startPos, endPos) };
-		switch (deco[i].style){
+		switch (deco[i].deco.style){
 			case "double":
 				doubleDecor.push(decoration);
 				break;

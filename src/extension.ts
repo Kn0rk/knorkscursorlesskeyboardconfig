@@ -54,6 +54,9 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.selectMark', targetMarkInstance.selectMark);
 	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('kckc.setHat', targetMarkInstance.setHat);
+	context.subscriptions.push(disposable);
+
 	disposable = vscode.commands.registerCommand('kckc.setTargetScope', setTargetScope);
 	context.subscriptions.push(disposable);
 
@@ -91,29 +94,30 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.setTargetMode', setTargetMode);
 	context.subscriptions.push(disposable);
 
-	// disposable = vscode.commands.registerCommand('kckc.setEnd', setEnd);
-	// context.subscriptions.push(disposable);
+	disposable = vscode.commands.registerCommand('kckc.setEnd', setEnd);
+	context.subscriptions.push(disposable);
 
-	// disposable = vscode.commands.registerCommand('kckc.setStart', setStart);
-	// context.subscriptions.push(disposable);
+	disposable = vscode.commands.registerCommand('kckc.setStart', setStart);
+	context.subscriptions.push(disposable);
 	
 	// when cursor moves, clear the targets
-	// vscode.window.onDidChangeTextEditorSelection(() => {
-	// 	decoration(context);
-	// });
-	// let activeEditor = vscode.window.activeTextEditor;
-	// vscode.window.onDidChangeActiveTextEditor(editor => {
-	// 	activeEditor = editor;
-	// 	if (editor) {
-	// 		decoration(context);
-	// 	}
-	// }, null, context.subscriptions);
+	decoration(context);
+	vscode.window.onDidChangeTextEditorSelection(() => {
+		decoration(context);
+	});
+	let activeEditor = vscode.window.activeTextEditor;
+	vscode.window.onDidChangeActiveTextEditor(editor => {
+		activeEditor = editor;
+		if (editor) {
+			decoration(context);
+		}
+	}, null, context.subscriptions);
 
-	// vscode.workspace.onDidChangeTextDocument(event => {
-	// 	if (activeEditor && event.document === activeEditor.document) {
-	// 		decoration(context);
-	// 	}
-	// }, null, context.subscriptions);
+	vscode.workspace.onDidChangeTextDocument(event => {
+		if (activeEditor && event.document === activeEditor.document) {
+			decoration(context);
+		}
+	}, null, context.subscriptions);
 
 	
 }

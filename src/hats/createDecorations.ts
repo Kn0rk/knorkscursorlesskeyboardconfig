@@ -1,12 +1,57 @@
+import { setRange } from "../handler";
 import { HatCandidate } from "./splitDocument";
+import * as vscode from 'vscode';
 
 const styles = ["solid","double"] as const;
-type Style = typeof styles[number];
-export type Decoration = {
+export type Style = typeof styles[number];
+
+
+export type Decoration={
     style: Style,
-    character: string;
+    character: string,
 };
 
+// export class Decoration {
+//     constructor(
+//         public style: Style,
+//         public character: string,
+//     ) {
+//         this.toStringRepr = this.toStringRepr.bind(this);
+//     }
+
+//     toStringRepr(): string {
+//         return `${this.style}:${this.character}`;
+//     }
+
+//     static fromString(str: string): Decoration {
+//         const [style, character] = str.split(":");
+//         if (styles.includes(style as Style)) {
+//             return new Decoration(style as Style, character);
+//         } else {
+//             throw new Error(`Invalid style: ${style}`);
+//         }
+//     }
+// }
+
+
+
+export type Hat =HatCandidate &{charOffset:number};
+
+
+export function hatToEditor(hat:Hat):vscode.TextEditor{
+    let editor=  vscode.window.activeTextEditor;
+    if (!editor){
+        throw Error;
+    }
+    return editor;
+}
+
+export function hatToPos(hat:Hat):[vscode.Position,vscode.Position]{
+    let editor = hatToEditor(hat);
+    let start = editor.document.positionAt(hat.startOffset);
+    let end =  editor.document.positionAt(hat.endOffset);
+    return [start,end];
+}
 
 function getAllDecos(): Decoration[]{
     const alphabet: string[] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
@@ -40,7 +85,10 @@ function getMatchingDeco(char:string,decos:Decoration[]):number{
 
 }
 
-export type DecoProto = Decoration & HatCandidate &{ charOffset:number}
+export type DecoProto = {
+    deco: Decoration,
+    hat:Hat
+};
 
 export function createDecoration(text:string,candidates:HatCandidate[]):DecoProto[]{
 
@@ -54,7 +102,8 @@ export function createDecoration(text:string,candidates:HatCandidate[]):DecoProt
             let idx = getMatchingDeco(word.charAt(j),decos);
             if (idx >=0){
                 const deco = decos[idx];
-                let res: DecoProto = {...deco,...candidate,charOffset:j};
+                let hat:Hat = {...candidate,charOffset:j};
+                let res: DecoProto = {deco,hat};
                 result.push(res);
                 decos.splice(idx,1);
                 break;
