@@ -6,7 +6,7 @@ import { setTargetScope } from "./setScope";
 
 export function setEnd() {
 
-    setTargetScope("line");
+    // setTargetScope("line");
 
     let modifier: Modifier = {
         type: "endOf",
@@ -19,7 +19,7 @@ export function setEnd() {
 
 export function setStart() {
 
-    setTargetScope("line");
+    // setTargetScope("line");
 
     let modifier: Modifier = {
         type: "startOf",
