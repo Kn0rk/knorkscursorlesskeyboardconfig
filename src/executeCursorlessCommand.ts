@@ -145,8 +145,9 @@ export function addModifier(modifier: Modifier) {
     // activeModifiers = [...activeModifiers, modifier];
     if (modifier.type === "containingScope") {
         activeModifiers = [...activeModifiers, modifier];
+    }else{
+        activeModifiers = [modifier,...activeModifiers];
     }
-    activeModifiers = [modifier,...activeModifiers];
     // activeModifiers.push(modifier);
     highlightCurrentTargets();
 }
