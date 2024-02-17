@@ -30,31 +30,7 @@
     "workspace"
   ],
   "contributes": {
-    "commands": [
-      {
-        "command": "kckc.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "kckc.selectMark",
-        "title": "selectMark"
-      },
-      {
-        "command": "kckc.setTargetScope",
-        "title": "selectScope"
-      },
-      {
-        "command": "kckc.performAction",
-        "title": "performAction"
-      },
-      {
-        "command": "kckc.setTargetMode",
-        "title": "setTargetMode"
-      },
-      {
-        "command": "kckc.setRelative",
-        "title": "setRelative"
-      },
+    "commands": [    
       {
         "command": "kckc.modeOn",
         "title": "modeOn"
@@ -68,20 +44,12 @@
         "title": "modeToggle"
       },
       {
-        "command": "kckc.endOf",
-        "title": "endOf"
-      },
-      {
-        "command": "kckc.targetPairedDelimiter",
-        "title": "targetPairedDelimiter"
+        "command": "kckc.bring",
+        "title": "bring"
       },
       {
         "command": "kckc.setHat",
         "title": "..."
-      },
-      {
-        "command": "kckc.startOf",
-        "title": "set Start"
       }
     ]
   },

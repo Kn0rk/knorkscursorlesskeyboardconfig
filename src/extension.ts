@@ -1,18 +1,12 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { StatusBarItem } from './StatusBarItem';
 import KeyboardHandler from './KeyboardHandler';
+import { StatusBarItem } from './StatusBarItem';
+import { bring } from './commands/bring';
 import { TargetMark } from './commands/setTarget';
-import { clear, log } from 'console';
-import { setTargetScope } from './commands/setScope';
-import { clearTargets, performActionOnTarget, setTargetMode } from './executeCursorlessCommand';
-import { setRelative } from './commands/setRelative';
-import { targetPairedDelimiter } from './commands/pairedDelimiter';
-import { setCursor } from './setCursor';
 import { decoration } from './decorator';
-import { setEnd, setStart } from './commands/headTail';
-// import { setEnd, setStart } from './commands/headTail';
+import { setCursor } from './setCursor';
 
 var g_mode = false;
 export function setMode(mode: boolean) {
@@ -51,25 +45,9 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.selectMark', targetMarkInstance.selectMark);
-	context.subscriptions.push(disposable);
+
 
 	disposable = vscode.commands.registerCommand('kckc.setHat', targetMarkInstance.setHat);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.setTargetScope', setTargetScope);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.clearTargets', clearTargets);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.performAction', performActionOnTarget);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.setRelative', setRelative);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.targetPairedDelimiter', targetPairedDelimiter);
 	context.subscriptions.push(disposable);
 
 
@@ -79,25 +57,13 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.modeOff', () => { setMode(false); });
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.endOf', setEnd);
-	context.subscriptions.push(disposable);
-
-
-	disposable = vscode.commands.registerCommand('kckc.startOf', setStart);
-	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.modeToggle', () => {
 		setMode(!g_mode);
 	});
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.setTargetMode', setTargetMode);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.setEnd', setEnd);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.setStart', setStart);
+	disposable = vscode.commands.registerCommand('kckc.bring', bring);
 	context.subscriptions.push(disposable);
 	
 	// when cursor moves, clear the targets
