@@ -1,6 +1,6 @@
 import { Decoration, Hat } from "./hats/createDecorations";
 import * as vscode from 'vscode';
-import { highlight } from "./highlight";
+import { highlight, highlightCursor } from "./highlight";
 import { ReadVResult } from "fs";
 import { group } from "console";
 
@@ -24,13 +24,18 @@ export function getHat(deco:Decoration):Hat{
 function decoToString(deco:Decoration):string{
     return `${deco.style}:${deco.character}`;
 }
+setInterval(()=>{
+    let targets = getTargets();
+    highlightCursor(targets);
+},1000);
 
 export class UserTarget {
     
 
     constructor(
         public editor: vscode.TextEditor,
-        public range : vscode.Range
+        public range : vscode.Range,
+        public cursorPosition: "start" | "end" = "end"
     ){}
 
     boundingRange(other:UserTarget ){
