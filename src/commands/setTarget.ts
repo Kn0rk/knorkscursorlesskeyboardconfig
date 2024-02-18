@@ -15,8 +15,6 @@ export class TargetMark {
         this.setHat = this.setHat.bind(this);
     }
 
- 
-
     setHat(shape:Style){
 
                 
@@ -35,7 +33,7 @@ export class TargetMark {
             let hat = getHat({style:shape,character:text});
             let editor = hatToEditor(hat);
             const [start,end] = hatToPos(hat);
-            setRange(new UserTarget(editor,new vscode.Range(start,end)));
+            setRange([new UserTarget(editor,new vscode.Range(start,end))]);
                     
         setMode(true);
             

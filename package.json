@@ -44,8 +44,20 @@
         "title": "modeToggle"
       },
       {
-        "command": "kckc.bring",
-        "title": "bring"
+        "command": "kckc.selectActionReset",
+        "title": "..."
+      },
+      {
+        "command": "kckc.selectAction",
+        "title": "..."
+      },
+      {
+        "command": "kckc.selectActionResetAction",
+        "title": "..."
+      },
+      {
+        "command": "kckc.modAllSelections",
+        "title": "..."
       },
       {
         "command": "kckc.setHat",

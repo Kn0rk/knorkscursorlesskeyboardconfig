@@ -3,10 +3,11 @@
 import * as vscode from 'vscode';
 import KeyboardHandler from './KeyboardHandler';
 import { StatusBarItem } from './StatusBarItem';
-import { bring } from './commands/bring';
 import { TargetMark } from './commands/setTarget';
 import { decoration } from './decorator';
 import { setCursor } from './setCursor';
+import { selectAction, selectActionReset, selectActionResetAction } from './commands/bring';
+import { modAll } from './mods/basic';
 
 var g_mode = false;
 export function setMode(mode: boolean) {
@@ -63,8 +64,19 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.bring', bring);
+	disposable = vscode.commands.registerCommand('kckc.selectActionReset', selectActionReset);
 	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.selectAction', selectAction);
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.selectActionResetAction', selectActionResetAction);
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.modAllSelections', modAll);
+	context.subscriptions.push(disposable);
+
+
 	
 	// when cursor moves, clear the targets
 	decoration(context);

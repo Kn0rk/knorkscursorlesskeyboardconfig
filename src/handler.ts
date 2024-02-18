@@ -25,10 +25,6 @@ function decoToString(deco:Decoration):string{
     return `${deco.style}:${deco.character}`;
 }
 
-// let g_editor:vscode.TextEditor|undefined = undefined;;
-// let g_starPos:vscode.Position|undefined = undefined;
-// let g_endPos:vscode.Position|undefined = undefined;
-
 export class UserTarget {
     
 
@@ -37,7 +33,7 @@ export class UserTarget {
         public range : vscode.Range
     ){}
 
-    union(other:UserTarget ){
+    boundingRange(other:UserTarget ){
 
         if(this.editor.document.uri !== other.editor.document.uri){
             return;
@@ -62,28 +58,40 @@ export class UserTarget {
 
 // all selections will be in the same editor
 let allTargets: UserTarget[]=[];
-let mode: "range"| "list" = "range";
+export type ModeType =  "boundingRange"| "append" | "replace" ;
+let mode: ModeType= "boundingRange";
 
-export function setRange(selection:UserTarget,union:boolean|null=null){
+export function getTargets(): UserTarget[]{
+    return allTargets;
+}
+
+export function setRange(selections:UserTarget[],mode_override:ModeType|null=null){
 
     let actual_mode = mode;
-    if (union){
-        actual_mode = "range";
+    if (mode_override){
+        actual_mode = mode_override;
     }
+
     if( allTargets.length === 0){
-        allTargets = [selection];
+        allTargets = selections;
     }
-    if (selection.editor.document.uri !== allTargets[0].editor.document.uri){
-        allTargets = [selection];
+    if (selections[0].editor.document.uri !== allTargets[0].editor.document.uri){
+        allTargets = selections;
     }
     
     switch (mode) {
-        case "list":
-            allTargets = [selection,...allTargets];
+        case "append":
+            allTargets = [...selections,...allTargets];
             break;
-        case "range":
-            allTargets[0].union(selection);            
+        case "boundingRange":
+            for (let index = 0;index <allTargets.length; index++) {
+                allTargets[index].boundingRange(selections[index]);
+                
+            }
             break;
+        case "replace":
+            allTargets = selections;
+        break;
     
         default:
             break;
@@ -94,6 +102,7 @@ export function setRange(selection:UserTarget,union:boolean|null=null){
 
 export function clearSelection(){
     allTargets=  [];
+    highlight(allTargets);
 }
 
 class TmpSelection{
