@@ -22,9 +22,6 @@
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
-  "extensionDependencies": [
-    "pokey.cursorless"
-  ],
   "extensionKind": [
     "ui",
     "workspace"
@@ -57,6 +54,10 @@
       },
       {
         "command": "kckc.modAllSelections",
+        "title": "..."
+      },
+      {
+        "command": "kckc.clearSelection",
         "title": "..."
       },
       {

@@ -30,16 +30,24 @@ export function highlightCursor(  sel:UserTarget[]){
 	}
 	if (switchCursor){
 	cursor_deco = vscode.window.createTextEditorDecorationType({
-		borderWidth:   '0px 1px 0px 0px',
-		borderStyle: 'solid',
+		borderWidth:   '0px 2px 0px 0px',
+		borderStyle: 'dotted',
 	});
 	for( let i = 0;i<sel.length;i++){
 		let elem = sel[i];
-		elem.editor.setDecorations(cursor_deco,
-			[{ range: new vscode.Range(
-				new vscode.Position(elem.range.end.line,elem.range.end.character-1),
-				elem.range.end
-			)  }]);
+		if (elem.cursorPosition === "end"){
+			elem.editor.setDecorations(cursor_deco,
+				[{ range: new vscode.Range(
+					new vscode.Position(elem.range.end.line,elem.range.end.character-1),
+					elem.range.end
+				)  }]);
+		}else{
+			elem.editor.setDecorations(cursor_deco,
+				[{ range: new vscode.Range(
+					new vscode.Position(elem.range.start.line,elem.range.start.character-1),
+					elem.range.start
+				)  }]);
+		}
 	}
 	}
 	switchCursor=!switchCursor;

@@ -27,7 +27,7 @@ function decoToString(deco:Decoration):string{
 setInterval(()=>{
     let targets = getTargets();
     highlightCursor(targets);
-},1000);
+},500);
 
 export class UserTarget {
     
@@ -35,7 +35,8 @@ export class UserTarget {
     constructor(
         public editor: vscode.TextEditor,
         public range : vscode.Range,
-        public cursorPosition: "start" | "end" = "end"
+        public anchor: vscode.Position,
+        public cursorPosition: "start" | "end" = "end",
     ){}
 
     boundingRange(other:UserTarget ){
@@ -84,7 +85,7 @@ export function setRange(selections:UserTarget[],mode_override:ModeType|null=nul
         allTargets = selections;
     }
     
-    switch (mode) {
+    switch (actual_mode) {
         case "append":
             allTargets = [...selections,...allTargets];
             break;
@@ -101,6 +102,7 @@ export function setRange(selections:UserTarget[],mode_override:ModeType|null=nul
         default:
             break;
     }
+    
     highlight(allTargets);
     
 }

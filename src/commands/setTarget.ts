@@ -33,7 +33,7 @@ export class TargetMark {
             let hat = getHat({style:shape,character:text});
             let editor = hatToEditor(hat);
             const [start,end] = hatToPos(hat);
-            setRange([new UserTarget(editor,new vscode.Range(start,end))]);
+            setRange([new UserTarget(editor,new vscode.Range(start,end),end)]);
                     
         setMode(true);
             
