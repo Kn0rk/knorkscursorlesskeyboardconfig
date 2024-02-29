@@ -1,6 +1,7 @@
 import { UserTarget, getTargets, setRange } from "../handler";
 import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
+import { insideAny } from "../commands/inside";
 
 
 
@@ -31,6 +32,9 @@ export function modAll(modifier: string) {
             break;
         case "goToPrevToken":
             byToken("prev","replace");
+            break;
+        case "insideAny":
+            insideAny();
             break;
 
         default:
