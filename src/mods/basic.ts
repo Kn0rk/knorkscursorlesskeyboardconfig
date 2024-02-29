@@ -1,7 +1,7 @@
 import { UserTarget, getTargets, setRange } from "../handler";
 import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
-import { insideAny } from "../commands/inside";
+import { insideAny } from "./inside";
 
 
 
@@ -110,7 +110,7 @@ function byToken(
                 newTargets.push(new UserTarget(element.editor, newRange, element.anchor, element.cursorPosition));
             }
         } else if (mode === "replace") {
-            newTargets.push(new UserTarget(element.editor, newRange, element.anchor, element.cursorPosition));
+            newTargets.push(new UserTarget(element.editor, newRange, newRange.end, element.cursorPosition));
         }
     }
     setRange(newTargets, "replace");

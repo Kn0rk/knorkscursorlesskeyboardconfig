@@ -107,7 +107,7 @@ export function insideAny() {
         }
 
         if(openingPos !== null && closingPos !==null){
-            newTargets.push(new UserTarget(element.editor, new vscode.Range(getNextChar(element.editor,openingPos)!,closingPos), element.anchor, element.cursorPosition));
+            newTargets.push(new UserTarget(element.editor, new vscode.Range(getNextChar(element.editor,openingPos)!,closingPos), closingPos, element.cursorPosition));
         }
     }
     setRange(newTargets, "replace");
