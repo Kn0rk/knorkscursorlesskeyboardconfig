@@ -1,4 +1,3 @@
-import { setRange } from "../handler";
 import { HatCandidate } from "./splitDocument";
 import * as vscode from 'vscode';
 

@@ -5,10 +5,10 @@ import KeyboardHandler from './KeyboardHandler';
 import { StatusBarItem } from './StatusBarItem';
 import { TargetMark } from './commands/setTarget';
 import { decoration } from './decorator';
-import { setCursor } from './setCursor';
-import { selectAction, selectActionReset, selectActionResetAction } from './commands/bring';
+import { setCursorStyle } from './setCursor';
 import { modAll } from './mods/basic';
 import { clearSelection } from './handler';
+
 
 var g_mode = false;
 export function setMode(mode: boolean) {
@@ -16,10 +16,10 @@ export function setMode(mode: boolean) {
 	g_mode = mode;
 	vscode.commands.executeCommand("setContext", "kckc.mode", mode);
 	if(mode){
-		setCursor(vscode.TextEditorCursorStyle.BlockOutline);
+		setCursorStyle(vscode.TextEditorCursorStyle.BlockOutline);
 	}
 	else{
-		setCursor(vscode.TextEditorCursorStyle.Line);
+		setCursorStyle(vscode.TextEditorCursorStyle.Line);
 	}
 
 }
@@ -65,14 +65,14 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.selectActionReset', selectActionReset);
-	context.subscriptions.push(disposable);
+	// disposable = vscode.commands.registerCommand('kckc.selectActionReset', selectActionReset);
+	// context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.selectAction', selectAction);
-	context.subscriptions.push(disposable);
+	// disposable = vscode.commands.registerCommand('kckc.selectAction', selectAction);
+	// context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.selectActionResetAction', selectActionResetAction);
-	context.subscriptions.push(disposable);
+	// disposable = vscode.commands.registerCommand('kckc.selectActionResetAction', selectActionResetAction);
+	// context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.modAllSelections', modAll);
 	context.subscriptions.push(disposable);

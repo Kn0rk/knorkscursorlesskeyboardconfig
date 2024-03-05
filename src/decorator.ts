@@ -11,6 +11,7 @@ export function decoration(context:vscode.ExtensionContext):void{
 
 	
 	const activeEditor = vscode.window.activeTextEditor;
+	// activeEditor?.document.
 	if (!activeEditor) {
 		return;
 	}

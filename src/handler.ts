@@ -1,8 +1,9 @@
 import { Decoration, Hat } from "./hats/createDecorations";
 import * as vscode from 'vscode';
-import { highlight, highlightCursor } from "./highlight";
-import { ReadVResult } from "fs";
-import { group } from "console";
+import { clearHighlights, highlightCursor } from "./highlight";
+import { TempCursor, TempSelection } from "./TempCursor";
+import { PositionMath } from "./utils/ExtendedPos";
+
 
 let deco_map: {[key: string]: any}= new Map();
 export function setHat(deco :Decoration, hat: Hat){
@@ -25,117 +26,65 @@ function decoToString(deco:Decoration):string{
     return `${deco.style}:${deco.character}`;
 }
 setInterval(()=>{
-    let targets = getTargets();
-    highlightCursor(targets);
+    if(tempCursor){
+        highlightCursor(tempCursor.pos,tempCursor.editor);
+    }
 },500);
 
-export class UserTarget {
-    
-
-    constructor(
-        public editor: vscode.TextEditor,
-        public range : vscode.Range,
-        public anchor: vscode.Position,
-        public cursorPosition: "start" | "end" = "end",
-    ){}
-
-    boundingRange(other:UserTarget ){
-
-        if(this.editor.document.uri !== other.editor.document.uri){
-            return;
-        }
-
-        let start = this.range.start;
-        let end = this.range.end;
-        if (other.range.start.line < this.range.start.line || (other.range.start.line === this.range.start.line && other.range.start.character< this.range.start.character)){
-            start = other.range.start;
-        }
-
-        if (other.range.end.line > this.range.end.line || (other.range.end.line === this.range.end.line && other.range.end.character> this.range.end.character)) {
-            end = other.range.end;
-        }
-
-        this.range = new vscode.Range(start,end);
-    }
-    
+let tempCursor: TempCursor|null=null;
+let tempSelection: TempSelection|null=null;
 
 
-};
 
-// all selections will be in the same editor
-let allTargets: UserTarget[]=[];
-export type ModeType =  "boundingRange"| "append" | "replace" ;
-let mode: ModeType= "boundingRange";
 
-export function getTargets(): UserTarget[]{
-    return allTargets;
+export function setTempCursor(cursor:TempCursor){
+    tempCursor=cursor;
 }
 
-export function setRange(selections:UserTarget[],mode_override:ModeType|null=null){
+function extendRangeByCursor(
+    cursor:TempCursor,
+    range:vscode.Range
+){
+ if( new PositionMath(cursor.pos).greaterThan(new PositionMath(range.start))){
+    return new vscode.Selection(range.start,cursor.pos);
+ }else{
+    return new vscode.Selection(cursor.pos,range.end);
+ }
+}
 
-    let actual_mode = mode;
-    if (mode_override){
-        actual_mode = mode_override;
-    }
 
-    if( allTargets.length === 0){
-        allTargets = selections;
+export function moveTempCursor(
+    newCursor:TempCursor,
+    shift:boolean=false
+){
+    if(tempCursor===null){
+        if(shift){
+            newCursor.editor.selection=extendRangeByCursor(newCursor,newCursor.editor.selection);
+        }else{
+            newCursor.editor.selection=new vscode.Selection(newCursor.pos,newCursor.pos);
+        }
+    }else{
+        tempCursor=newCursor;
     }
-    if (selections[0].editor.document.uri !== allTargets[0].editor.document.uri){
-        allTargets = selections;
+    highlightCursor(newCursor.pos,newCursor.editor,true);
+}
+
+
+export function getCursor():TempCursor|null{
+    if (tempCursor){
+        return tempCursor;
     }
-    
-    switch (actual_mode) {
-        case "append":
-            allTargets = [...selections,...allTargets];
-            break;
-        case "boundingRange":
-            for (let index = 0;index <allTargets.length; index++) {
-                allTargets[index].boundingRange(selections[index]);
-                
-            }
-            break;
-        case "replace":
-            allTargets = selections;
-        break;
-    
-        default:
-            break;
+    else{
+        let editor = vscode.window.activeTextEditor;
+        if (editor){
+            return new TempCursor(editor.selection.active,editor);
+        }
     }
-    
-    highlight(allTargets);
-    
+    return null;
 }
 
 export function clearSelection(){
-    allTargets=  [];
-    highlight(allTargets);
-}
-
-class TmpSelection{
-
-    private old_selection;
-    public isSet;
-    constructor(){
-        this.isSet=true;
-        if (allTargets.length === 0){
-            this.isSet = false;
-            this.old_selection=undefined;
-            return;
-        }
-
-        this.old_selection = allTargets[0].editor.selection;
-        let ranges = allTargets.map( sel =>  new vscode.Selection(sel.range.start,sel.range.end));
-        allTargets[0].editor.selections = ranges;
-    }
-
-    reset(){
-        if (this.old_selection){
-            allTargets[0].editor.selection=this.old_selection;
-        }
-    }
-}
-
-export function selectAll():TmpSelection{
-    return new TmpSelection();
+    tempCursor=null;
+    tempSelection=null;
+    clearHighlights();
 }

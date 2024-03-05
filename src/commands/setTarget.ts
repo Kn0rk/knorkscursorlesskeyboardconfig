@@ -2,8 +2,9 @@ import KeyboardHandler, { DisplayOptions } from "../KeyboardHandler";
 
 import * as vscode from 'vscode';
 import { setMode } from "../extension";
-import { UserTarget, getHat, setRange } from "../handler";
+import { getHat, setTempCursor } from "../handler";
 import { Style, hatToEditor, hatToPos } from "../hats/createDecorations";
+import { KCKCTextDocument, TempCursor } from "../TempCursor";
 
 
 
@@ -16,11 +17,7 @@ export class TargetMark {
     }
 
     setHat(shape:Style){
-
-                
         setMode(false);
-        
-
         const options:DisplayOptions = {
             cursorStyle:vscode.TextEditorCursorStyle.Underline,
             statusBarText:"Select hat"};
@@ -28,15 +25,11 @@ export class TargetMark {
             if (text === undefined) {
                 return;
             }
-
-
             let hat = getHat({style:shape,character:text});
             let editor = hatToEditor(hat);
             const [start,end] = hatToPos(hat);
-            setRange([new UserTarget(editor,new vscode.Range(start,end),end)]);
-                    
+            setTempCursor(new TempCursor(start,editor));
         setMode(true);
-            
         });
     
     
