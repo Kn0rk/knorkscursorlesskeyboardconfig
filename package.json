@@ -22,39 +22,12 @@
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
-  "extensionDependencies": [
-    "pokey.cursorless"
-  ],
   "extensionKind": [
     "ui",
     "workspace"
   ],
   "contributes": {
-    "commands": [
-      {
-        "command": "kckc.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "kckc.selectMark",
-        "title": "selectMark"
-      },
-      {
-        "command": "kckc.setTargetScope",
-        "title": "selectScope"
-      },
-      {
-        "command": "kckc.performAction",
-        "title": "performAction"
-      },
-      {
-        "command": "kckc.setTargetMode",
-        "title": "setTargetMode"
-      },
-      {
-        "command": "kckc.setRelative",
-        "title": "setRelative"
-      },
+    "commands": [    
       {
         "command": "kckc.modeOn",
         "title": "modeOn"
@@ -68,16 +41,28 @@
         "title": "modeToggle"
       },
       {
-        "command": "kckc.endOf",
-        "title": "endOf"
+        "command": "kckc.selectActionReset",
+        "title": "..."
       },
       {
-        "command": "kckc.targetPairedDelimiter",
-        "title": "targetPairedDelimiter"
+        "command": "kckc.selectAction",
+        "title": "..."
       },
       {
-        "command": "kckc.startOf",
-        "title": "set Start"
+        "command": "kckc.selectActionResetAction",
+        "title": "..."
+      },
+      {
+        "command": "kckc.modAllSelections",
+        "title": "..."
+      },
+      {
+        "command": "kckc.clearSelection",
+        "title": "..."
+      },
+      {
+        "command": "kckc.setHat",
+        "title": "..."
       }
     ]
   },

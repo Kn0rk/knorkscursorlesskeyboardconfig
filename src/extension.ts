@@ -1,18 +1,15 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { StatusBarItem } from './StatusBarItem';
 import KeyboardHandler from './KeyboardHandler';
+import { StatusBarItem } from './StatusBarItem';
 import { TargetMark } from './commands/setTarget';
-import { clear, log } from 'console';
-import { setTargetScope } from './commands/setScope';
-import { clearTargets, performActionOnTarget, setTargetMode } from './executeCursorlessCommand';
-import { setRelative } from './commands/setRelative';
-import { targetPairedDelimiter } from './commands/pairedDelimiter';
-import { setCursor } from './setCursor';
 import { decoration } from './decorator';
-import { setEnd, setStart } from './commands/headTail';
-// import { setEnd, setStart } from './commands/headTail';
+import { setCursorStyle } from './setCursor';
+import { modAll } from './mods/basic';
+import { clearSelection } from './handler';
+import { selectAction, selectActionReset, selectActionResetAction } from './commands/bring';
+
 
 var g_mode = false;
 export function setMode(mode: boolean) {
@@ -20,10 +17,10 @@ export function setMode(mode: boolean) {
 	g_mode = mode;
 	vscode.commands.executeCommand("setContext", "kckc.mode", mode);
 	if(mode){
-		setCursor(vscode.TextEditorCursorStyle.BlockOutline);
+		setCursorStyle(vscode.TextEditorCursorStyle.BlockOutline);
 	}
 	else{
-		setCursor(vscode.TextEditorCursorStyle.Line);
+		setCursorStyle(vscode.TextEditorCursorStyle.Line);
 	}
 
 }
@@ -51,22 +48,9 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.selectMark', targetMarkInstance.selectMark);
-	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.setTargetScope', setTargetScope);
-	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.clearTargets', clearTargets);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.performAction', performActionOnTarget);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.setRelative', setRelative);
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('kckc.targetPairedDelimiter', targetPairedDelimiter);
+	disposable = vscode.commands.registerCommand('kckc.setHat', targetMarkInstance.setHat);
 	context.subscriptions.push(disposable);
 
 
@@ -76,44 +60,47 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.modeOff', () => { setMode(false); });
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.endOf', setEnd);
-	context.subscriptions.push(disposable);
-
-
-	disposable = vscode.commands.registerCommand('kckc.startOf', setStart);
-	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.modeToggle', () => {
 		setMode(!g_mode);
 	});
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.setTargetMode', setTargetMode);
+	disposable = vscode.commands.registerCommand('kckc.selectActionReset', selectActionReset);
 	context.subscriptions.push(disposable);
 
-	// disposable = vscode.commands.registerCommand('kckc.setEnd', setEnd);
-	// context.subscriptions.push(disposable);
+	disposable = vscode.commands.registerCommand('kckc.selectAction', selectAction);
+	context.subscriptions.push(disposable);
 
-	// disposable = vscode.commands.registerCommand('kckc.setStart', setStart);
-	// context.subscriptions.push(disposable);
+	disposable = vscode.commands.registerCommand('kckc.selectActionResetAction', selectActionResetAction);
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('kckc.modAllSelections', modAll);
+	context.subscriptions.push(disposable);
+
+	
+	disposable = vscode.commands.registerCommand('kckc.clearSelection', clearSelection);
+	context.subscriptions.push(disposable);
+
 	
 	// when cursor moves, clear the targets
-	// vscode.window.onDidChangeTextEditorSelection(() => {
-	// 	decoration(context);
-	// });
-	// let activeEditor = vscode.window.activeTextEditor;
-	// vscode.window.onDidChangeActiveTextEditor(editor => {
-	// 	activeEditor = editor;
-	// 	if (editor) {
-	// 		decoration(context);
-	// 	}
-	// }, null, context.subscriptions);
+	decoration(context);
+	vscode.window.onDidChangeTextEditorSelection(() => {
+		decoration(context);
+	});
+	let activeEditor = vscode.window.activeTextEditor;
+	vscode.window.onDidChangeActiveTextEditor(editor => {
+		activeEditor = editor;
+		if (editor) {
+			decoration(context);
+		}
+	}, null, context.subscriptions);
 
-	// vscode.workspace.onDidChangeTextDocument(event => {
-	// 	if (activeEditor && event.document === activeEditor.document) {
-	// 		decoration(context);
-	// 	}
-	// }, null, context.subscriptions);
+	vscode.workspace.onDidChangeTextDocument(event => {
+		if (activeEditor && event.document === activeEditor.document) {
+			decoration(context);
+		}
+	}, null, context.subscriptions);
 
 	
 }

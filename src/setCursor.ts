@@ -4,14 +4,14 @@ let style:vscode.TextEditorCursorStyle;
 let init:boolean=false;
 
 
-function setCursorStyle(){
+function internalSetCursorStyle(){
     if (! vscode.window.activeTextEditor){
         return;
     }
     vscode.window.activeTextEditor.options.cursorStyle = style;
 }
 
-export function setCursor(newStyle : vscode.TextEditorCursorStyle){
+export function setCursorStyle(newStyle : vscode.TextEditorCursorStyle){
     style=newStyle;
 
     if (!init){
@@ -19,10 +19,10 @@ export function setCursor(newStyle : vscode.TextEditorCursorStyle){
             if (!textEditor){
                 return;
             }
-            setCursorStyle();
+            internalSetCursorStyle();
         }
         );
         init=true;
     }
-    setCursorStyle();
+    internalSetCursorStyle();
 }
