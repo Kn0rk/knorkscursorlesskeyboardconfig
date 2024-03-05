@@ -1,6 +1,3 @@
-edit
-
-clearTarget on cursorMove
-allow cursorMovment through command?
-
-checkout setKeyboardTarget
+- Stop the cursor from blinking when the user makes a temporary selection
+-  cleanup all decorations when the extension is disabled
+-   allow jumping to temporary cursor
