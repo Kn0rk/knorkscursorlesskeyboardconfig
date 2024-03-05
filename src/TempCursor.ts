@@ -14,6 +14,3 @@ export class TempCursor{
     constructor(public pos:vscode.Position,public editor:vscode.TextEditor){}
 }
 
-export class TempSelection{
-    constructor(public range:vscode.Range){}
-}

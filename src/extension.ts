@@ -8,6 +8,7 @@ import { decoration } from './decorator';
 import { setCursorStyle } from './setCursor';
 import { modAll } from './mods/basic';
 import { clearSelection } from './handler';
+import { selectAction, selectActionReset, selectActionResetAction } from './commands/bring';
 
 
 var g_mode = false;
@@ -65,14 +66,14 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 
-	// disposable = vscode.commands.registerCommand('kckc.selectActionReset', selectActionReset);
-	// context.subscriptions.push(disposable);
+	disposable = vscode.commands.registerCommand('kckc.selectActionReset', selectActionReset);
+	context.subscriptions.push(disposable);
 
-	// disposable = vscode.commands.registerCommand('kckc.selectAction', selectAction);
-	// context.subscriptions.push(disposable);
+	disposable = vscode.commands.registerCommand('kckc.selectAction', selectAction);
+	context.subscriptions.push(disposable);
 
-	// disposable = vscode.commands.registerCommand('kckc.selectActionResetAction', selectActionResetAction);
-	// context.subscriptions.push(disposable);
+	disposable = vscode.commands.registerCommand('kckc.selectActionResetAction', selectActionResetAction);
+	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.modAllSelections', modAll);
 	context.subscriptions.push(disposable);

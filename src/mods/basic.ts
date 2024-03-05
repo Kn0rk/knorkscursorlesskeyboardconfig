@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
 import { getCursor, moveTempCursor } from '../handler';
 import { TempCursor } from '../TempCursor';
+import { insideAny } from './inside';
 
 
 
@@ -28,9 +29,28 @@ export function modAll(modifier: string) {
         case "prevToken":
             byToken("prev");
             break;
-        // case "insideAny":
-        //     insideAny();
-        //     break;
+        case "shiftEnd":
+            end(true);
+            break;
+        case "shiftHome":
+            home(true);
+            break;
+        case "shiftDown":
+            verticalMove("down",true);
+            break;
+        case "shiftUp":
+            verticalMove("up",true);
+            break;
+        case "shiftNextToken":
+            byToken("next",true);
+            break;
+        case "shiftPrevToken":
+            byToken("prev",true);
+            break;
+
+        case "insideAny":
+            insideAny();
+            break;
 
         default:
             vscode.window.showErrorMessage(`Modifier ${modifier} not supported`);
@@ -39,7 +59,8 @@ export function modAll(modifier: string) {
 }
 
 function byToken(
-    dir: "prev" | "next"
+    dir: "prev" | "next",
+    shift:boolean=false
 ) {
 
 
@@ -88,11 +109,11 @@ function byToken(
         );
     }
 
-    moveTempCursor(new TempCursor(newRange.start,editor));
+    moveTempCursor(new TempCursor(newRange.start,editor),shift);
     
 }
 
-function home() {
+function home(shift:boolean=false) {
     let cursor = getCursor();
     if(cursor === null){
         return;
@@ -108,10 +129,10 @@ function home() {
     if (match && match.index && match.index !== cursorPos.character) {
         startOfLine = new vscode.Position(startOfLine.line, match.index);
     }
-    moveTempCursor(new TempCursor(startOfLine,editor)); 
+    moveTempCursor(new TempCursor(startOfLine,editor),shift); 
 }
 
-function end() {
+function end(shift:boolean=false) {
     let cursor = getCursor();
     if(cursor === null){
         return;
@@ -121,12 +142,12 @@ function end() {
     
     let line = cursorPos.line;
     let end = editor.document.lineAt(line).range.end;
-    moveTempCursor(new TempCursor(end,editor));
+    moveTempCursor(new TempCursor(end,editor),shift);
 
 
 }
 
-function verticalMove(dir: "up" | "down") {
+function verticalMove(dir: "up" | "down",shift:boolean=false) {
     let cursor = getCursor();
     if(cursor === null){
         return;
@@ -139,7 +160,7 @@ function verticalMove(dir: "up" | "down") {
         nextPos = new vscode.Position(cursorPos.line - 1, cursorPos.character);
     }
 
-    moveTempCursor(new TempCursor(nextPos,editor));
+    moveTempCursor(new TempCursor(nextPos,editor),shift);
 
 
 
