@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
-import { getCursor, setTempSelection } from '../handler';
+import { getCursor, moveTempCursor, setTempSelection } from '../handler';
+import { TempCursor } from '../TempCursor';
 
 
 function getPreviousChar(editor:vscode.TextEditor,cursor:vscode.Position){
@@ -31,6 +32,24 @@ function getNextChar(editor:vscode.TextEditor,cursor:vscode.Position){
 }
 
 
+export function byChar(dir:"next"|"prev",shift:boolean=false){
+    let cursor = getCursor();
+    if(cursor === null){
+        return;
+    }
+    let cursorPos = cursor.pos;
+    let editor = cursor.editor;
+    let line = cursorPos.line;
+    let nextPos:vscode.Position|null=null;
+    if(dir === "next"){
+        nextPos= getNextChar(editor,cursorPos);
+    } else{
+        nextPos = getPreviousChar(editor,cursorPos);
+    }
+    if (nextPos){
+        moveTempCursor(new TempCursor(nextPos,editor),shift); 
+    }
+}
 
 
 export function insideAny() {

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
 import { getCursor, moveTempCursor } from '../handler';
 import { TempCursor } from '../TempCursor';
-import { insideAny } from './inside';
+import { byChar, insideAny } from './inside';
 
 
 
@@ -11,29 +11,11 @@ import { insideAny } from './inside';
 export function modAll(modifier: string) {
 
     switch (modifier) {
-        case "end":
-            end();
-            break;
-        case "home":
-            home();
-            break;
         case "down":
             verticalMove("down");
             break;
         case "up":
             verticalMove("up");
-            break;
-        case "nextToken":
-            byToken("next");
-            break;
-        case "prevToken":
-            byToken("prev");
-            break;
-        case "shiftEnd":
-            end(true);
-            break;
-        case "shiftHome":
-            home(true);
             break;
         case "shiftDown":
             verticalMove("down",true);
@@ -41,12 +23,43 @@ export function modAll(modifier: string) {
         case "shiftUp":
             verticalMove("up",true);
             break;
+        case "nextToken":
+            byToken("next");
+            break;
+        case "prevToken":
+            byToken("prev");
+            break;
         case "shiftNextToken":
             byToken("next",true);
             break;
         case "shiftPrevToken":
             byToken("prev",true);
+            break;    
+        case "nextChar":
+            byChar("next");
             break;
+        case "prevChar":
+            byChar("prev");
+            break;
+        case "shiftNextChar":
+            byChar("next",true);
+            break;
+        case "shiftPrevChar":
+            byChar("prev",true);
+            break;
+        case "end":
+            end();
+            break;
+        case "home":
+            home();
+            break;
+        case "shiftEnd":
+            end(true);
+            break;
+        case "shiftHome":
+            home(true);
+            break;
+
 
         case "insideAny":
             insideAny();
