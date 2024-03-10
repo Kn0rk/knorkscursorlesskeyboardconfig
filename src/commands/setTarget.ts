@@ -5,6 +5,7 @@ import { setMode } from "../extension";
 import { getHat, setTempCursor } from "../handler";
 import { Style, hatToEditor, hatToPos } from "../hats/createDecorations";
 import { KCKCTextDocument, TempCursor } from "../TempCursor";
+import { setCursorStyle } from "../setCursor";
 
 
 
@@ -17,7 +18,7 @@ export class TargetMark {
     }
 
     setHat(shape:Style){
-        setMode(false);
+        vscode.commands.executeCommand("setContext", "kckc.mode", false);
         const options:DisplayOptions = {
             cursorStyle:vscode.TextEditorCursorStyle.Underline,
             statusBarText:"Select hat"};
@@ -29,7 +30,8 @@ export class TargetMark {
             let editor = hatToEditor(hat);
             const [start,end] = hatToPos(hat);
             setTempCursor(new TempCursor(start,editor));
-        setMode(true);
+            vscode.commands.executeCommand("setContext", "kckc.mode", true);
+            setCursorStyle(vscode.TextEditorCursorStyle.BlockOutline);
         });
     
     

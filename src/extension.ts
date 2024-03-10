@@ -22,6 +22,7 @@ export function setMode(mode: boolean) {
 	else{
 		setCursorStyle(vscode.TextEditorCursorStyle.Line);
 	}
+	clearSelection();
 
 }
 

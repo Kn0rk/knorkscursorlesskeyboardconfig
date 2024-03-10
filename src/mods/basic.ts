@@ -174,7 +174,4 @@ function verticalMove(dir: "up" | "down",shift:boolean=false) {
     }
 
     moveTempCursor(new TempCursor(nextPos,editor),shift);
-
-
-
 }

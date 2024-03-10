@@ -39,6 +39,8 @@ let tempSelection: vscode.Selection | null = null;
 
 export function setTempCursor(cursor: TempCursor) {
     tempCursor = cursor;
+    highlightCursor(cursor.pos, cursor.editor, true);
+    highlightSelection(tempSelection,cursor.editor);
     setCursorBlink();
 }
 
@@ -47,6 +49,7 @@ export function setTempSelection(sel:vscode.Selection,editor:vscode.TextEditor){
     tempCursor=new TempCursor(tempSelection.active,editor);
     highlightCursor(tempCursor.pos, tempCursor.editor, true);
     highlightSelection(tempSelection,tempCursor.editor);
+    setCursorBlink();
 }
 
 function extendRangeByCursor(

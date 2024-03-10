@@ -16,11 +16,12 @@ export function clearHighlights() {
 }
 
 export function highlightSelection(sel: vscode.Selection|null, editor: vscode.TextEditor) {
-	if (!sel){
-		return;
-	}
+
 	if (background){
 		background.dispose();
+	}
+	if (!sel){
+		return;
 	}
 	background = vscode.window.createTextEditorDecorationType({
 		backgroundColor: 'rgba(0,0,150,0.17)',
