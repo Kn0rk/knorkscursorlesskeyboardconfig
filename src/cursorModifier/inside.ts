@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
 import { getCursor, moveTempCursor, setTempSelection } from '../handler';
-import { KCKCTextDocument, TempCursor } from '../TempCursor';
+import { KCKCTextDocument, TempCursor } from '../VsCodeFassade';
 
 
 function getPreviousChar(doc: KCKCTextDocument, cursor: vscode.Position): vscode.Position | null {

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { splitDocument } from './hats/splitDocument';
-import { DecoProto, createDecoration } from './hats/createDecorations';
-import { setHat } from './handler';
+import { splitDocument } from './splitDocument';
+import { DecoProto, createDecoration } from './createDecorations';
+import { setHat } from '../handler';
 
 
 let solid: vscode.TextEditorDecorationType|null = null;

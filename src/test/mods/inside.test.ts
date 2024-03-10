@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 
 import * as vscode from 'vscode';
-import { insideAny } from '../../mods/inside';
+import { insideAny } from '../../cursorModifier/inside';
 import { FakeDocument } from '../fakeDocument';
 // import * as myExtension from '../../extension';
 

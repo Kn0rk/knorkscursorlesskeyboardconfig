@@ -4,8 +4,8 @@ import * as vscode from 'vscode';
 import { setMode } from "../extension";
 import { getHat, setTempCursor } from "../handler";
 import { Style, hatToEditor, hatToPos } from "../hats/createDecorations";
-import { KCKCTextDocument, TempCursor } from "../TempCursor";
-import { setCursorStyle } from "../setCursor";
+import { KCKCTextDocument, TempCursor } from "../VsCodeFassade";
+import { setCursorStyle } from "../highlightSelection";
 
 
 

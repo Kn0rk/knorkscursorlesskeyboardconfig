@@ -1,4 +1,4 @@
-import { KCKCTextDocument, KCKCTextLine } from "../TempCursor";
+import { KCKCTextDocument, KCKCTextLine } from "../VsCodeFassade";
 import * as vscode from 'vscode';
 
 

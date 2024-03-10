@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
 import { getCursor, moveTempCursor } from '../handler';
-import { TempCursor } from '../TempCursor';
+import { TempCursor } from '../VsCodeFassade';
 import { byChar, insideAny, insideAnyWrap } from './inside';
 
 
@@ -109,7 +109,7 @@ function byToken(
             new vscode.Position(cursorPos.line + 1, 0)
         );
     } else if (matches.length > 1 && dir === "prev") {
-        let lastMatch = matches[matches.length - 2];
+        let lastMatch = matches[matches.length - 1];
         newRange = new vscode.Range(
             new vscode.Position(cursorPos.line, lastMatch.index),
             new vscode.Position(cursorPos.line, lastMatch.index + lastMatch[0].length)

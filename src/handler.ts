@@ -1,8 +1,9 @@
 import { Decoration, Hat } from "./hats/createDecorations";
 import * as vscode from 'vscode';
-import { clearHighlights, highlightCursor, highlightSelection } from "./highlight";
-import { TempCursor } from "./TempCursor";
+import { clearHighlights, highlightCursor, highlightSelection } from "./highlightSelection";
+import { TempCursor } from "./VsCodeFassade";
 import { PositionMath } from "./utils/ExtendedPos";
+import { tmpdir } from "os";
 
 
 let deco_map: { [key: string]: any } = new Map();
@@ -34,10 +35,10 @@ setInterval(() => {
 let tempCursor: TempCursor | null = null;
 let tempSelection: vscode.Selection | null = null;
 
-
-
-
 export function setTempCursor(cursor: TempCursor) {
+    if (tempCursor){
+        tempSelection= new vscode.Selection(tempCursor.pos,cursor.pos);
+    }
     tempCursor = cursor;
     highlightCursor(cursor.pos, cursor.editor, true);
     highlightSelection(tempSelection,cursor.editor);

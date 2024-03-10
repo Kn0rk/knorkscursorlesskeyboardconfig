@@ -1,7 +1,4 @@
-import * as vscode from 'vscode';
-
-
-
+import * as vscode from "vscode";
 let background: vscode.TextEditorDecorationType | null = null;
 let cursor_deco: vscode.TextEditorDecorationType | null = null;
 let switchCursor: boolean = true;
@@ -51,4 +48,28 @@ export function highlightCursor(elem: vscode.Position, doc: vscode.TextEditor, f
 	}
 
 	switchCursor = !switchCursor;
+}
+let style: vscode.TextEditorCursorStyle;
+let init: boolean = false;
+function internalSetCursorStyle() {
+    if (!vscode.window.activeTextEditor) {
+        return;
+    }
+    vscode.window.activeTextEditor.options.cursorStyle = style;
+}
+
+export function setCursorStyle(newStyle: vscode.TextEditorCursorStyle) {
+    style = newStyle;
+
+    if (!init) {
+        vscode.window.onDidChangeActiveTextEditor((textEditor) => {
+            if (!textEditor) {
+                return;
+            }
+            internalSetCursorStyle();
+        }
+        );
+        init = true;
+    }
+    internalSetCursorStyle();
 }
