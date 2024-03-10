@@ -1,11 +1,19 @@
 import * as vscode from 'vscode';
+import { getKeyboardHandler } from './extension';
 
-export function setuserMode(modeName: string, mode: boolean) {
-    modeName = "kckc."+modeName;
-    vscode.commands.executeCommand("setContext","kckc.shift" , mode);
+
+let userModes = new Map<string,boolean>();
+
+export function setUserMode(namedArgs: any ) {
+    let modeName = "kckc." + namedArgs.modeName;
+    let mode = namedArgs.mode;
+    userModes.set(modeName,mode);
+    vscode.commands.executeCommand("setContext",modeName , mode);
+    let handler = getKeyboardHandler();
+    if(handler){
+        let text = mode? "KCKC":namedArgs.modeName;
+        handler.setStatusBarText(text);
+    }
+
 }
 
-export async function toggleUserMode(modeName: string) {
-
-    setuserMode(modeName, !true);
-}

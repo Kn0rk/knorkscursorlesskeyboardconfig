@@ -65,10 +65,6 @@
         "title": "..."
       },
       {
-        "command": "kckc.toggleUserMode",
-        "title": "..."
-      },
-      {
         "command": "kckc.setUserMode",
         "title": "..."
       }, 

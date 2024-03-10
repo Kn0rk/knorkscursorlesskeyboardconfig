@@ -8,8 +8,8 @@ import { decoration } from './hats/textHatDecoration';
 import { setCursorStyle } from "./highlightSelection";
 import { modAll } from './cursorModifier/basic';
 import { clearSelection, makeTempSelectionActive } from './handler';
-import { selectAction, selectActionReset, selectActionResetAction } from './commands/bring';
-import { setuserMode, toggleUserMode } from './whenClause';
+import { selectAction, selectActionReset, selectActionResetAction } from './commands/actions';
+import { setUserMode } from './whenClause';
 
 
 var g_mode = false;
@@ -26,12 +26,15 @@ export function setMode(mode: boolean) {
 	clearSelection();
 
 }
-
+let keyboardHandler:KeyboardHandler|null = null;
+export function getKeyboardHandler():KeyboardHandler|null{
+	return keyboardHandler;
+}
 
 export function activate(context: vscode.ExtensionContext) {
 	
 	const statusBarItem = StatusBarItem.create("cursorless.showQuickPick");
-	const keyboardHandler = new KeyboardHandler(context, statusBarItem);
+	keyboardHandler = new KeyboardHandler(context, statusBarItem);
 	
 	const targetMarkInstance = new TargetMark(keyboardHandler);
 	keyboardHandler.init();
@@ -39,8 +42,6 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Hello World from kckc!');		
 	});
 	context.subscriptions.push(disposable);
-
-
 
 	disposable = vscode.commands.registerCommand('kckc.setHat', targetMarkInstance.setHat);
 	context.subscriptions.push(disposable);
@@ -51,7 +52,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	disposable = vscode.commands.registerCommand('kckc.modeOff', () => { setMode(false); });
 	context.subscriptions.push(disposable);
-
 
 	disposable = vscode.commands.registerCommand('kckc.modeToggle', () => {
 		setMode(!g_mode);
@@ -72,12 +72,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	disposable = vscode.commands.registerCommand('kckc.makeTempSelectionActive', makeTempSelectionActive);
 	context.subscriptions.push(disposable);
-	
-	disposable = vscode.commands.registerCommand('kckc.toggleUserMode', toggleUserMode);
-	context.subscriptions.push(disposable);
-
-		
-	disposable = vscode.commands.registerCommand('kckc.setUserMode', setuserMode);
+			
+	disposable = vscode.commands.registerCommand('kckc.setUserMode', setUserMode);
 	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.clearSelection', clearSelection);
@@ -102,7 +98,6 @@ export function activate(context: vscode.ExtensionContext) {
 			decoration(context);
 		}
 	}, null, context.subscriptions);
-
 	
 }
 

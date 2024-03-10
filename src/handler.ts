@@ -59,9 +59,9 @@ function extendRangeByCursor(
 ) {
 
     if (new PositionMath(cursor.pos).greaterThan(new PositionMath(range.start))) {
-        return new vscode.Selection(cursor.pos, range.start);
+        return new vscode.Selection( range.start,cursor.pos);
     } else {
-        return new vscode.Selection(range.end, cursor.pos);
+        return new vscode.Selection( cursor.pos,range.end);
     }
 }
 
@@ -73,7 +73,6 @@ export function moveTempCursor(
     if (tempCursor === null && shift) {
         newCursor.editor.selection = extendRangeByCursor(newCursor, newCursor.editor.selection);
     } else if (tempCursor === null && !shift) {
-        tempSelection=null;
         newCursor.editor.selection = new vscode.Selection(newCursor.pos, newCursor.pos);
     } else if (tempCursor && shift) {
         if (!tempSelection){
