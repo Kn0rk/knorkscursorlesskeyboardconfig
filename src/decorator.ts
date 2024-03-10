@@ -65,12 +65,6 @@ export function decoration(context:vscode.ExtensionContext):void{
 	
 	activeEditor.setDecorations(solid, solidDecor);
 	activeEditor.setDecorations(double, doubleDecor);
-
-
-
-	vscode.window.showInformationMessage('Hello World from kckc!');
-
-
 }
 
 

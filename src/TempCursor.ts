@@ -8,6 +8,7 @@ export interface KCKCTextLine{
 export interface KCKCTextDocument{
     lineAt(line: number): KCKCTextLine;
     readonly lineCount:number;
+    
 }
 
 export class TempCursor{

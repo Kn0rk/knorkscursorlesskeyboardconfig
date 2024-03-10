@@ -39,6 +39,7 @@ let tempSelection: vscode.Selection | null = null;
 
 export function setTempCursor(cursor: TempCursor) {
     tempCursor = cursor;
+    setCursorBlink();
 }
 
 export function setTempSelection(sel:vscode.Selection,editor:vscode.TextEditor){
@@ -83,10 +84,18 @@ export function moveTempCursor(
 
     highlightCursor(newCursor.pos, newCursor.editor, true);
     highlightSelection(tempSelection,newCursor.editor);
-    
+    setCursorBlink();
 }
 
-
+export function makeTempSelectionActive(){
+    if( tempCursor && tempSelection ){
+        tempCursor.editor.selection=tempSelection;
+    }
+    else if (tempCursor){
+        tempCursor.editor.selection=new vscode.Selection(tempCursor.pos,tempCursor.pos);
+    }
+    clearSelection();
+}
 
 export function getCursor(): TempCursor | null {
     if (tempCursor) {
@@ -101,10 +110,20 @@ export function getCursor(): TempCursor | null {
     return null;
 }
 
+function setCursorBlink(){
+    const config = vscode.workspace.getConfiguration();
+    let cursorBlinking =  "blink";
+    if(tempCursor){
+       cursorBlinking =  "solid";	
+    }
+    config.update("editor.cursorBlinking", cursorBlinking, vscode.ConfigurationTarget.Workspace);
+}
+
 export function clearSelection() {
     tempCursor = null;
     tempSelection = null;
     clearHighlights();
+    setCursorBlink();
 }
 
 class TmpSelection{

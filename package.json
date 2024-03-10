@@ -57,6 +57,10 @@
         "title": "..."
       },
       {
+        "command": "kckc.makeTempSelectionActive",
+        "title": "..."
+      },
+      {
         "command": "kckc.clearSelection",
         "title": "..."
       },

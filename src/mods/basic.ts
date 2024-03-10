@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { PositionMath } from "../utils/ExtendedPos";
 import { getCursor, moveTempCursor } from '../handler';
 import { TempCursor } from '../TempCursor';
-import { byChar, insideAny } from './inside';
+import { byChar, insideAny, insideAnyWrap } from './inside';
 
 
 
@@ -62,7 +62,7 @@ export function modAll(modifier: string) {
 
 
         case "insideAny":
-            insideAny();
+            insideAnyWrap();
             break;
 
         default:

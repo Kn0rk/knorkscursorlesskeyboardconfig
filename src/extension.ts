@@ -7,7 +7,7 @@ import { TargetMark } from './commands/setTarget';
 import { decoration } from './decorator';
 import { setCursorStyle } from './setCursor';
 import { modAll } from './mods/basic';
-import { clearSelection } from './handler';
+import { clearSelection, makeTempSelectionActive } from './handler';
 import { selectAction, selectActionReset, selectActionResetAction } from './commands/bring';
 
 
@@ -78,6 +78,8 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.modAllSelections', modAll);
 	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('kckc.makeTempSelectionActive', makeTempSelectionActive);
+	context.subscriptions.push(disposable);
 	
 	disposable = vscode.commands.registerCommand('kckc.clearSelection', clearSelection);
 	context.subscriptions.push(disposable);
@@ -108,4 +110,9 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {
 	
+	const config = vscode.workspace.getConfiguration();
+    let cursorBlinking =  "blink";
+	config.update("editor.cursorBlinking", cursorBlinking, vscode.ConfigurationTarget.Workspace);
+	clearSelection();
+	vscode.window.showInformationMessage('Deactive!');	
 }
