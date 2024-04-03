@@ -10,29 +10,6 @@ export type Decoration={
     character: string,
 };
 
-// export class Decoration {
-//     constructor(
-//         public style: Style,
-//         public character: string,
-//     ) {
-//         this.toStringRepr = this.toStringRepr.bind(this);
-//     }
-
-//     toStringRepr(): string {
-//         return `${this.style}:${this.character}`;
-//     }
-
-//     static fromString(str: string): Decoration {
-//         const [style, character] = str.split(":");
-//         if (styles.includes(style as Style)) {
-//             return new Decoration(style as Style, character);
-//         } else {
-//             throw new Error(`Invalid style: ${style}`);
-//         }
-//     }
-// }
-
-
 
 export type Hat =HatCandidate &{charOffset:number};
 

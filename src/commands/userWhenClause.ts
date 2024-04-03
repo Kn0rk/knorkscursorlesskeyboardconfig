@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getKeyboardHandler } from './extension';
+import { getKeyboardHandler } from '../extension';
 
 
 let userModes = new Map<string,boolean>();

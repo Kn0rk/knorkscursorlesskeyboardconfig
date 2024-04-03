@@ -33,14 +33,18 @@ test('inside quote', () => {
     assert.equal(sel.end.character,off+target.length);
 });
 
-test('surrounded by quotes', () => {
+
+
+
+test('surrounded by quotes', async () =>  {
+    
     let text = `{
-        "test", bla , "tester"
-    }`;
+"test{}", bla , "tester"
+}`;
     let doc = new FakeDocument(text);
     let target = "bla";
     let off=text.indexOf(target);
-    let cursor = new vscode.Position(0,off);
+    let cursor = new vscode.Position(1,off);
     const sel = insideAny(cursor,doc);
     assert.ok(sel);
     assert.equal(sel.start.line,0);
@@ -49,4 +53,4 @@ test('surrounded by quotes', () => {
     assert.equal(sel.end.character,0);
     
 });
-// });
+

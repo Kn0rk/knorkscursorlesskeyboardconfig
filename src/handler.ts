@@ -1,9 +1,8 @@
 import { Decoration, Hat } from "./hats/createDecorations";
 import * as vscode from 'vscode';
-import { clearHighlights, highlightCursor, highlightSelection } from "./highlightSelection";
-import { TempCursor } from "./VsCodeFassade";
+import { clearHighlights, highlightCursor, highlightSelection } from "./utils/highlightSelection";
+import { TempCursor as SecondaryCursor } from "./utils/structs";
 import { PositionMath } from "./utils/ExtendedPos";
-import { tmpdir } from "os";
 
 
 let deco_map: { [key: string]: any } = new Map();
@@ -27,131 +26,136 @@ function decoToString(deco: Decoration): string {
     return `${deco.style}:${deco.character}`;
 }
 setInterval(() => {
-    if (tempCursor) {
-        highlightCursor(tempCursor.pos, tempCursor.editor);
+    if (secondaryCursor) {
+        highlightCursor(secondaryCursor.pos, secondaryCursor.editor);
     }
 }, 500);
 
-let tempCursor: TempCursor | null = null;
-let tempSelection: vscode.Selection | null = null;
+export let secondaryCursor: SecondaryCursor | null = null;
+export let secondarySelection: vscode.Selection | null = null;
 
-export function setTempCursor(cursor: TempCursor) {
-    if (tempCursor){
-        tempSelection= new vscode.Selection(tempCursor.pos,cursor.pos);
+export function setSecondaryCursor(cursor: SecondaryCursor) {
+    if (secondaryCursor) {
+        secondarySelection = new vscode.Selection(secondaryCursor.pos, cursor.pos);
     }
-    tempCursor = cursor;
+    secondaryCursor = cursor;
     highlightCursor(cursor.pos, cursor.editor, true);
-    highlightSelection(tempSelection,cursor.editor);
+    highlightSelection(secondarySelection, cursor.editor);
     setCursorBlink();
 }
 
-export function setTempSelection(sel:vscode.Selection,editor:vscode.TextEditor){
-    tempSelection=sel;
-    tempCursor=new TempCursor(tempSelection.active,editor);
-    highlightCursor(tempCursor.pos, tempCursor.editor, true);
-    highlightSelection(tempSelection,tempCursor.editor);
+export function setSecondarySelection(sel: vscode.Selection, editor: vscode.TextEditor) {
+    secondarySelection = sel;
+    secondaryCursor = new SecondaryCursor(secondarySelection.active, editor);
+    highlightCursor(secondaryCursor.pos, secondaryCursor.editor, true);
+    highlightSelection(secondarySelection, secondaryCursor.editor);
     setCursorBlink();
 }
 
 function extendRangeByCursor(
-    cursor: TempCursor,
+    cursor: SecondaryCursor,
     range: vscode.Range
 ) {
-
     if (new PositionMath(cursor.pos).greaterThan(new PositionMath(range.start))) {
-        return new vscode.Selection( range.start,cursor.pos);
+        return new vscode.Selection(range.start, cursor.pos);
     } else {
-        return new vscode.Selection( cursor.pos,range.end);
+        return new vscode.Selection(cursor.pos, range.end);
     }
 }
 
 
 export function moveTempCursor(
-    newCursor: TempCursor,
+    newCursor: SecondaryCursor,
     shift: boolean = false
 ) {
-    if (tempCursor === null && shift) {
+    if (secondaryCursor === null && shift) {
         newCursor.editor.selection = extendRangeByCursor(newCursor, newCursor.editor.selection);
-    } else if (tempCursor === null && !shift) {
+    } else if (secondaryCursor === null && !shift) {
         newCursor.editor.selection = new vscode.Selection(newCursor.pos, newCursor.pos);
-    } else if (tempCursor && shift) {
-        if (!tempSelection){
-            tempSelection=new vscode.Selection(tempCursor.pos,tempCursor.pos);
+    } else if (secondaryCursor && shift) {
+        if (!secondarySelection) {
+            secondarySelection = new vscode.Selection(secondaryCursor.pos, secondaryCursor.pos);
         }
-        tempSelection = extendRangeByCursor(newCursor, tempSelection);
-        tempCursor=newCursor;
+        secondarySelection = extendRangeByCursor(newCursor, secondarySelection);
+        secondaryCursor = newCursor;
     } else {
-        tempSelection=null;
-        tempCursor = newCursor;
+        secondarySelection = null;
+        secondaryCursor = newCursor;
     }
 
     highlightCursor(newCursor.pos, newCursor.editor, true);
-    highlightSelection(tempSelection,newCursor.editor);
+    highlightSelection(secondarySelection, newCursor.editor);
     setCursorBlink();
 }
 
-export function makeTempSelectionActive(){
-    if( tempCursor && tempSelection ){
-        tempCursor.editor.selection=tempSelection;
+export function makeTempSelectionActive() {
+    if (secondaryCursor && secondarySelection) {
+        secondaryCursor.editor.selection = secondarySelection;
     }
-    else if (tempCursor){
-        tempCursor.editor.selection=new vscode.Selection(tempCursor.pos,tempCursor.pos);
+    else if (secondaryCursor) {
+        secondaryCursor.editor.selection = new vscode.Selection(secondaryCursor.pos, secondaryCursor.pos);
     }
     clearSelection();
 }
 
-export function getCursor(): TempCursor | null {
-    if (tempCursor) {
-        return tempCursor;
+export function getSecondaryCursor(): SecondaryCursor | null {
+    if (secondaryCursor) {
+        return secondaryCursor;
     }
     else {
         let editor = vscode.window.activeTextEditor;
         if (editor) {
-            return new TempCursor(editor.selection.active, editor);
+            return new SecondaryCursor(editor.selection.active, editor);
         }
     }
     return null;
 }
 
-function setCursorBlink(){
+export function getSelection(): vscode.Selection |null{
+    if( secondarySelection){
+        return secondarySelection;
+    }
+
+    const secCur = getSecondaryCursor();
+    if (secCur){
+        const lineText = secCur.editor.document.lineAt(secCur.pos.line).text;
+        let i = secCur.pos.character;
+        const alphaNum = /^[a-zA-Z0-9]$/;
+        while(i >=1 && alphaNum.test(lineText[i-1])){i--;}
+        let j = secCur.pos.character;
+        while(j < lineText.length && alphaNum.test(lineText[j])){j++;}
+
+        return new vscode.Selection(
+            new vscode.Position(secCur.pos.line,i),
+            new vscode.Position(secCur.pos.line,j),
+        );
+    }
+
+    return null;
+}
+
+function setCursorBlink() {
     const config = vscode.workspace.getConfiguration();
-    let cursorBlinking =  "blink";
-    if(tempCursor){
-       cursorBlinking =  "solid";	
+    let cursorBlinking = "blink";
+    if (secondaryCursor) {
+        cursorBlinking = "solid";
     }
     config.update("editor.cursorBlinking", cursorBlinking, vscode.ConfigurationTarget.Workspace);
 }
 
 export function clearSelection() {
-    tempCursor = null;
-    tempSelection = null;
+    let editor = vscode.window.activeTextEditor;
+    if (editor) {
+        editor.selections = [
+            new vscode.Selection(
+                editor.selection.active,
+                editor.selection.active
+            )
+        ];
+    }
+    secondaryCursor = null;
+    secondarySelection = null;
     clearHighlights();
     setCursorBlink();
 }
 
-class TmpSelection{
-
-    private old_selection;
-    public isSet;
-    constructor(){
-        this.isSet=true;
-        if (tempCursor === null || tempSelection === null){
-            this.isSet = false;
-            this.old_selection=undefined;
-        }else{
-            this.old_selection = tempCursor.editor.selection;
-            tempCursor.editor.selection = tempSelection;
-        }
-
-    }
-
-    reset(){
-        if (this.old_selection){
-            tempCursor!.editor.selection=this.old_selection;
-        }
-    }
-}
-
-export function selectAll():TmpSelection{
-    return new TmpSelection();
-}

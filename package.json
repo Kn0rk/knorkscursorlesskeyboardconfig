@@ -80,6 +80,7 @@
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
+    "test-local":"jest",
     "package": "pnpm vsce package --no-dependencies",
     "publish": "pnpm vsce publish --no-dependencies",
     "vscode:prepublish": "npm run esbuild-base -- --minify",

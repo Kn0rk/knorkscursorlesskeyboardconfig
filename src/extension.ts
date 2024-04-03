@@ -1,15 +1,15 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import KeyboardHandler from './KeyboardHandler';
-import { StatusBarItem } from './StatusBarItem';
+import KeyboardHandler from './utils/KeyboardHandler';
+import { StatusBarItem } from './utils/StatusBarItem';
 import { TargetMark } from './commands/setTarget';
 import { decoration } from './hats/textHatDecoration';
-import { setCursorStyle } from "./highlightSelection";
+import { setCursorStyle } from "./utils/highlightSelection";
 import { modAll } from './cursorModifier/basic';
 import { clearSelection, makeTempSelectionActive } from './handler';
 import { selectAction, selectActionReset, selectActionResetAction } from './commands/actions';
-import { setUserMode } from './whenClause';
+import { setUserMode } from './commands/userWhenClause';
 
 
 var g_mode = false;

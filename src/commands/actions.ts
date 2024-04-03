@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { clearSelection, selectAll } from '../handler';
+import { clearSelection } from '../handler';
+import { getSelectionContextSwitcher } from "../TmpSelectionContext";
 
 let tested_actions = [
     "editor.action.clipboardCutAction",
@@ -9,7 +10,7 @@ let tested_actions = [
 
 
 export async function selectActionReset(action:string){
-    let selection = selectAll();
+    let selection = getSelectionContextSwitcher();
     if( selection.isSet){
        await vscode.commands.executeCommand(action);
     }
@@ -19,7 +20,7 @@ export async function selectActionReset(action:string){
 
 
 export async function selectAction(action:string){
-    let selection = selectAll();
+    let selection = getSelectionContextSwitcher();
     if( selection.isSet){
        await vscode.commands.executeCommand(action);
     }
@@ -27,7 +28,7 @@ export async function selectAction(action:string){
 }
 
 export async function selectActionResetAction(actions:string[]){
-    let selection = selectAll();
+    let selection = getSelectionContextSwitcher();
     if( selection.isSet){
        await vscode.commands.executeCommand(actions[0]);
     }

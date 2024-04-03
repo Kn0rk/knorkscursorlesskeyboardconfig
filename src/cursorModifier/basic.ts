@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { PositionMath } from "../utils/ExtendedPos";
-import { getCursor, moveTempCursor } from '../handler';
-import { TempCursor } from '../VsCodeFassade';
+import { getSecondaryCursor, moveTempCursor } from '../handler';
+import { TempCursor } from '../utils/structs';
 import { byChar, insideAny, insideAnyWrap } from './inside';
 
 
@@ -77,7 +76,7 @@ function byToken(
 ) {
 
 
-    let cursor = getCursor();
+    let cursor = getSecondaryCursor();
     if(cursor === null){
         return;
     }
@@ -127,7 +126,7 @@ function byToken(
 }
 
 function home(shift:boolean=false) {
-    let cursor = getCursor();
+    let cursor = getSecondaryCursor();
     if(cursor === null){
         return;
     }
@@ -146,7 +145,7 @@ function home(shift:boolean=false) {
 }
 
 function end(shift:boolean=false) {
-    let cursor = getCursor();
+    let cursor = getSecondaryCursor();
     if(cursor === null){
         return;
     }
@@ -161,7 +160,7 @@ function end(shift:boolean=false) {
 }
 
 function verticalMove(dir: "up" | "down",shift:boolean=false) {
-    let cursor = getCursor();
+    let cursor = getSecondaryCursor();
     if(cursor === null){
         return;
     }

@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
-import { PositionMath } from "../utils/ExtendedPos";
-import { getCursor, moveTempCursor, setTempSelection } from '../handler';
-import { KCKCTextDocument, TempCursor } from '../VsCodeFassade';
+
+import { getSecondaryCursor, moveTempCursor, setSecondarySelection } from '../handler';
+import { TempCursor } from '../utils/structs';
 
 
-function getPreviousChar(doc: KCKCTextDocument, cursor: vscode.Position): vscode.Position | null {
-    if (cursor.character > 1) {
+function getPreviousChar(doc: vscode.TextDocument, cursor: vscode.Position): vscode.Position | null {
+    if (cursor.character >= 1) {
         cursor = new vscode.Position(cursor.line, cursor.character - 1);
     }
-    else if (cursor.line === 0) {
+    else if (cursor.line -1 < 0) {
         return null;
     }
     else {
@@ -17,23 +17,24 @@ function getPreviousChar(doc: KCKCTextDocument, cursor: vscode.Position): vscode
     return cursor;
 }
 
-function getNextChar(doc: KCKCTextDocument, cursor: vscode.Position) {
+function getNextChar(doc: vscode.TextDocument, cursor: vscode.Position) {
     let curLine = doc.lineAt(cursor.line);
     if (cursor.character < curLine.range.end.character) {
         cursor = new vscode.Position(cursor.line, cursor.character + 1);
     }
-    else if (cursor.line === doc.lineCount) {
+    else if (cursor.line +1 >= doc.lineCount) {
         return null;
     }
     else {
-        cursor = doc.lineAt(cursor.line + 1).range.start;
+        const line = doc.lineAt(cursor.line + 1);
+        cursor = line.range.start;
     }
     return cursor;
 }
 
 
 export function byChar(dir: "next" | "prev", shift: boolean = false) {
-    let cursor = getCursor();
+    let cursor = getSecondaryCursor();
     if (cursor === null) {
         return;
     }
@@ -52,11 +53,11 @@ export function byChar(dir: "next" | "prev", shift: boolean = false) {
 }
 
 
-function charAt(pos: vscode.Position, doc: KCKCTextDocument): string {
+function charAt(pos: vscode.Position, doc: vscode.TextDocument): string {
     return doc.lineAt(pos.line).text.at(pos.character) ?? "";
 }
 
-export function insideAny(cursor: vscode.Position, document: KCKCTextDocument): vscode.Selection | null {
+export function insideAny(cursor: vscode.Position, document: vscode.TextDocument): vscode.Selection | null {
 
     const openingCharacters = ["{", "[", "(", '<'];
     const closingCharacters = ["}", "]", ")", '>'];
@@ -92,7 +93,7 @@ export function insideAny(cursor: vscode.Position, document: KCKCTextDocument): 
                 firstAmbPos[amb] = lookBackPos;
             }
         }
-        lookBackPos = getPreviousChar(document, lookBackPos);
+        lookBackPos = getPreviousChar(document, lookBackPos);  
     }
 
     if (ambigousCounter[0] % 2 === 1) {
@@ -122,13 +123,15 @@ export function insideAny(cursor: vscode.Position, document: KCKCTextDocument): 
 }
 
 export function insideAnyWrap() {
-    let cursor = getCursor();
+    let cursor = getSecondaryCursor();
     if (cursor === null) {
         return;
     }
     let cursorPos = cursor.pos;
     let editor = cursor.editor;
     let selection = insideAny(cursorPos, editor.document);
+
+    
     // // find the next bracket before and after the cursor
     // let openingChars = ["{","[","(",'<'];
     // let ambigous = ["\"","'"];
@@ -192,7 +195,7 @@ export function insideAnyWrap() {
     //     }
     // }
     if (selection) {
-        setTempSelection(selection, editor);
+        setSecondarySelection(selection, editor);
     }
 
 }
