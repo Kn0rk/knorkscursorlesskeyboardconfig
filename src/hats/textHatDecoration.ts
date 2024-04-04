@@ -36,8 +36,8 @@ export function decoration(context:vscode.ExtensionContext):void{
 
 	const text = activeEditor.document.getText();
 	const cursorOffset = activeEditor.document.offsetAt(activeEditor.selection.active);
-    const candidates = splitDocument(text,cursorOffset);
-	const deco = createDecoration(text,candidates);
+    // const candidates = splitDocument(text,cursorOffset);
+	const deco = createDecoration(activeEditor.document);
 	deco.forEach((deco:DecoProto)=>{
 		setHat(deco.deco,deco.hat);
 	});
