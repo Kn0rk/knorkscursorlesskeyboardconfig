@@ -61,6 +61,11 @@
         "title": "..."
       },
       {
+
+        "command": "kckc.setShiftHat",
+        "title": "..."
+      },
+      {
         "command": "kckc.clearSelection",
         "title": "..."
       },
