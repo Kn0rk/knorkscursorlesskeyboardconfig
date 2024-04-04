@@ -34,9 +34,12 @@ setInterval(() => {
 export let secondaryCursor: SecondaryCursor | null = null;
 export let secondarySelection: vscode.Selection | null = null;
 
-export function setSecondaryCursor(cursor: SecondaryCursor) {
-    if (secondaryCursor) {
+export function setSecondaryCursor(cursor: SecondaryCursor,mode: "shift" | "replace" = "replace" ) {
+
+    if (mode === "shift" && secondaryCursor) {
         secondarySelection = new vscode.Selection(secondaryCursor.pos, cursor.pos);
+    }else{
+        secondarySelection = null;
     }
     secondaryCursor = cursor;
     highlightCursor(cursor.pos, cursor.editor, true);
@@ -89,13 +92,15 @@ export function moveTempCursor(
 }
 
 export function makeTempSelectionActive() {
+
     if (secondaryCursor && secondarySelection) {
         secondaryCursor.editor.selection = secondarySelection;
     }
     else if (secondaryCursor) {
         secondaryCursor.editor.selection = new vscode.Selection(secondaryCursor.pos, secondaryCursor.pos);
     }
-    clearSelection();
+    secondaryCursor=null;
+    secondarySelection=null;
 }
 
 export function getSecondaryCursor(): SecondaryCursor | null {
@@ -143,9 +148,9 @@ function setCursorBlink() {
     config.update("editor.cursorBlinking", cursorBlinking, vscode.ConfigurationTarget.Workspace);
 }
 
-export function clearSelection() {
+export function clearSelection(keepSelection:boolean=false) {
     let editor = vscode.window.activeTextEditor;
-    if (editor) {
+    if (editor && !keepSelection) {
         editor.selections = [
             new vscode.Selection(
                 editor.selection.active,

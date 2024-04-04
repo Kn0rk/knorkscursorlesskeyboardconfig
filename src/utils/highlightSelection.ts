@@ -21,7 +21,7 @@ export function highlightSelection(sel: vscode.Selection|null, editor: vscode.Te
 		return;
 	}
 	background = vscode.window.createTextEditorDecorationType({
-		backgroundColor: 'rgba(0,0,150,0.17)',
+		backgroundColor: 'rgba(0,170,150,0.17)',
 	});
 	editor.setDecorations(background,
 		[{ range: sel }]);

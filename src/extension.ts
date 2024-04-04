@@ -23,7 +23,8 @@ export function setMode(mode: boolean) {
 	else{
 		setCursorStyle(vscode.TextEditorCursorStyle.Line);
 	}
-	clearSelection();
+	makeTempSelectionActive();
+	clearSelection(true);
 
 }
 let keyboardHandler:KeyboardHandler|null = null;
@@ -46,6 +47,8 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.setHat', targetMarkInstance.setHat);
 	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('kckc.setShiftHat', targetMarkInstance.setShiftHat);
+	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('kckc.modeOn', () => { setMode( true); });
 	context.subscriptions.push(disposable);

@@ -104,7 +104,7 @@ export function insideAny(cursor: vscode.Position, document: vscode.TextDocument
         closingCharacter = ambigousCharacters[1];
     }
 
-    let lookForwardPos = getNextChar(document,cursor);
+    let lookForwardPos: vscode.Position|null = cursor;
     let closingPos = null;
     while( lookForwardPos){
         let currentChar = charAt(lookForwardPos,document);

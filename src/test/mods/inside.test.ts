@@ -54,3 +54,18 @@ test('surrounded by quotes', async () =>  {
     
 });
 
+
+test('end of range', async () =>  {
+    
+    let text = `(
+"test{}", bla , "tester")`;
+    let doc = new FakeDocument(text);
+    let cursor = new vscode.Position(1,24);
+    const sel = insideAny(cursor,doc);
+    assert.ok(sel);
+    assert.equal(sel.start.line,0);
+    assert.equal(sel.start.character,1);
+    assert.equal(sel.end.line,1);
+    assert.equal(sel.end.character,24);
+});
+

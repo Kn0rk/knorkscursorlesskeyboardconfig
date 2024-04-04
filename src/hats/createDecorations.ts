@@ -4,6 +4,9 @@ import * as vscode from 'vscode';
 const styles = ["solid","double"] as const;
 export type Style = typeof styles[number];
 
+const modes = ["shift","replace"] as const;
+export type Mode = typeof modes[number];
+
 
 export type Decoration={
     style: Style,
