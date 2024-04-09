@@ -81,16 +81,38 @@ function valueLine(line: vscode.TextLine): number[] {
     const text = line.text;
     const center = Math.floor(text.length / 2);
     let values = Array(text.length).fill(-50);
-    let addOn = 0;
+    let afterEquals = 0;
+    let inside = 0;
+
+
+    const openingCharacters = ["{", "[", "(", '<',"\"", "'"];
+    const closingCharacters = ["}", "]", ")", '>'];
+    let counters = [0, 0, 0, 0,0,0];
+
     for (let i = 0; i < text.length; i++) {
         let a_center = 1 - Math.abs(center - i) / center;
-        if (alphabet.indexOf(text[i]) >= 0) {
-            values[i] += 100 * a_center + addOn;
+        let currentChar = text[i];
+        if (alphabet.indexOf(currentChar) >= 0) {
+            values[i] += 100 * a_center + afterEquals + inside;
         }
-        if (text[i] === "=") {
-            addOn += 15;
+        if (currentChar === "=") {
+            afterEquals += 15;
         }
         // TODO reward inside parenthesis ...
+        let closing = closingCharacters.indexOf(currentChar);
+        let open = openingCharacters.indexOf(currentChar);
+        if (closing !== -1) {
+            counters[closing]--;
+        } else if (open !== -1) {
+            counters[open]++;
+        }
+
+        if(counters.some((n)=>{n>0;})){
+            inside=20;
+        }else{
+            inside=0;
+        }
+
     }
     return values;
 }
@@ -123,7 +145,10 @@ function charToAlphabetNumber(char: string): number {
     return alphabetNumber;
 }
 
-export function createDecoration(text: vscode.TextDocument): DecoProto[] {
+export function createDecoration(text: vscode.TextDocument, cursorPos:vscode.Position): DecoProto[] {
+
+
+
     let counts: number[] = Array(alphabet.length).fill(0);
     let positions: { [id: string]: ValuePos[] } = {};
     for (let c of alphabet) {
@@ -137,18 +162,21 @@ export function createDecoration(text: vscode.TextDocument): DecoProto[] {
         const valOrder = argsort(values);
         let choosen = [];
 
+        let lineDistance = Math.abs(cursorPos.line - iLine);
+
         for (let ival of valOrder.slice(0, 10)) {
             if(values[ival]<0){
                 break;
             }
-            const c = line.text[ival];
+            const c = line.
+            text[ival];
             const iC = charToAlphabetNumber(c);
             if (order.indexOf(iC) !== -1) {
                 counts[iC] += 1;
                 positions[c].push(
                     {
                         line: iLine,
-                        val: values[ival],
+                        val: values[ival] - lineDistance,
                         off: ival
                     }
                 );
@@ -207,12 +235,46 @@ export function createDecoration(text: vscode.TextDocument): DecoProto[] {
         integers: true // all variables are indicated as integer
       };
       
-      const solution: Solution = solve(model);
+    const solution: Solution = solve(model);
+
+    let res: DecoProto[]=[];
+
+    let styles_count: number[] = Array(alphabet.length).fill(0);
+    let styles:Style[]=["solid","double"];
+    for (let s of solution.variables){
+        const parts = s[0].split("&");
+        const line = parseInt(parts[0]);
+        const charoff = parseInt(parts[1]);
+        const pos = new vscode.Position(line,charoff);
+
+        const off = text.offsetAt(pos);
+        const char = text.lineAt(line).text[charoff];
+
+        const charIdx = charToAlphabetNumber(char);
+        const style = styles[styles_count[charIdx]];
+        styles_count[charIdx]+=1;
 
 
 
 
-    return [];
+        res.push({
+            deco:{
+                character:char,
+                style:style
+            },
+            hat:{
+                charOffset:off,
+                startOffset:off,
+                endOffset:off,
+                word:""
+            }
+        });
+
+    }
+
+
+
+    return res;
 
     // const decos = getAllDecos();
 

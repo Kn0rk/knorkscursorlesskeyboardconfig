@@ -35,9 +35,9 @@ export function decoration(context:vscode.ExtensionContext):void{
 	
 
 	const text = activeEditor.document.getText();
-	const cursorOffset = activeEditor.document.offsetAt(activeEditor.selection.active);
+	// const cursorOffset = activeEditor.selection.active;
     // const candidates = splitDocument(text,cursorOffset);
-	const deco = createDecoration(activeEditor.document);
+	const deco = createDecoration(activeEditor.document,activeEditor.selection.active);
 	deco.forEach((deco:DecoProto)=>{
 		setHat(deco.deco,deco.hat);
 	});
@@ -48,7 +48,7 @@ export function decoration(context:vscode.ExtensionContext):void{
 	const doubleDecor: vscode.DecorationOptions[] = [];
 
 	for ( let i = 0; i<deco.length;i++){
-		const offset = deco[i].hat.startOffset+deco[i].hat.charOffset;
+		const offset = deco[i].hat.charOffset;
 		const startPos = activeEditor.document.positionAt(offset);
 		const endPos = activeEditor.document.positionAt(offset + 1);
 
