@@ -12,19 +12,25 @@ let tested_actions = [
 export async function selectActionReset(action:string){
     let selection = getSelectionContextSwitcher();
     if( selection.isSet){
-       await vscode.commands.executeCommand(action);
+       vscode.commands.executeCommand(action).then(
+        ()=>{
+            selection.reset();
+            clearSelection();
+        }
+       );
     }
-    selection.reset();
-    clearSelection();
 }
 
 
 export async function selectAction(action:string){
     let selection = getSelectionContextSwitcher();
     if( selection.isSet){
-       await vscode.commands.executeCommand(action);
+       await vscode.commands.executeCommand(action).then(
+        ()=>{
+            clearSelection();
+        }
+       );
     }
-    clearSelection();
 }
 
 export async function selectActionResetAction(actions:string[]){

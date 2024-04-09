@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { getSecondaryCursor, moveTempCursor, setSecondarySelection } from '../handler';
+import { getSecondaryCursor, setSecondaryCursor, setSecondarySelection } from '../handler';
 import { TempCursor } from '../utils/structs';
 
 
@@ -33,7 +33,7 @@ function getNextChar(doc: vscode.TextDocument, cursor: vscode.Position) {
 }
 
 
-export function byChar(dir: "next" | "prev", shift: boolean = false) {
+export function byChar(dir: "next" | "prev", shift: "shift" | "replace" ="replace") {
     let cursor = getSecondaryCursor();
     if (cursor === null) {
         return;
@@ -48,7 +48,7 @@ export function byChar(dir: "next" | "prev", shift: boolean = false) {
         nextPos = getPreviousChar(editor.document, cursorPos);
     }
     if (nextPos) {
-        moveTempCursor(new TempCursor(nextPos, editor), shift);
+        setSecondaryCursor(new TempCursor(nextPos, editor), shift);
     }
 }
 

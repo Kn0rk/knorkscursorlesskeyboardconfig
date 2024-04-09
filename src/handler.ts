@@ -35,13 +35,23 @@ export let secondaryCursor: SecondaryCursor | null = null;
 export let secondarySelection: vscode.Selection | null = null;
 
 export function setSecondaryCursor(cursor: SecondaryCursor,mode: "shift" | "replace" = "replace" ) {
+    let sCur = getSecondaryCursor();
+    if (mode === "shift" && secondarySelection) {
+        secondarySelection = extendRangeByCursor(cursor,secondarySelection);
+    }else if(mode === "shift" && sCur){
+        secondarySelection = new vscode.Selection(cursor.pos,sCur.pos);
 
-    if (mode === "shift" && secondaryCursor) {
-        secondarySelection = new vscode.Selection(secondaryCursor.pos, cursor.pos);
-    }else{
+        if(!secondaryCursor){
+            sCur.editor.selections=[new vscode.Selection(cursor.pos,sCur.pos)];
+        }
+
+    }
+    else{
         secondarySelection = null;
     }
     secondaryCursor = cursor;
+    
+    
     highlightCursor(cursor.pos, cursor.editor, true);
     highlightSelection(secondarySelection, cursor.editor);
     setCursorBlink();
@@ -64,31 +74,6 @@ function extendRangeByCursor(
     } else {
         return new vscode.Selection(cursor.pos, range.end);
     }
-}
-
-
-export function moveTempCursor(
-    newCursor: SecondaryCursor,
-    shift: boolean = false
-) {
-    if (secondaryCursor === null && shift) {
-        newCursor.editor.selection = extendRangeByCursor(newCursor, newCursor.editor.selection);
-    } else if (secondaryCursor === null && !shift) {
-        newCursor.editor.selection = new vscode.Selection(newCursor.pos, newCursor.pos);
-    } else if (secondaryCursor && shift) {
-        if (!secondarySelection) {
-            secondarySelection = new vscode.Selection(secondaryCursor.pos, secondaryCursor.pos);
-        }
-        secondarySelection = extendRangeByCursor(newCursor, secondarySelection);
-        secondaryCursor = newCursor;
-    } else {
-        secondarySelection = null;
-        secondaryCursor = newCursor;
-    }
-
-    highlightCursor(newCursor.pos, newCursor.editor, true);
-    highlightSelection(secondarySelection, newCursor.editor);
-    setCursorBlink();
 }
 
 export function makeTempSelectionActive() {

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getSecondaryCursor, moveTempCursor } from '../handler';
+import { getSecondaryCursor,  setSecondaryCursor } from '../handler';
 import { TempCursor } from '../utils/structs';
 import { byChar, insideAny, insideAnyWrap } from './inside';
 
@@ -17,10 +17,10 @@ export function modAll(modifier: string) {
             verticalMove("up");
             break;
         case "shiftDown":
-            verticalMove("down",true);
+            verticalMove("down","shift");
             break;
         case "shiftUp":
-            verticalMove("up",true);
+            verticalMove("up","shift");
             break;
         case "nextToken":
             byToken("next");
@@ -29,10 +29,10 @@ export function modAll(modifier: string) {
             byToken("prev");
             break;
         case "shiftNextToken":
-            byToken("next",true);
+            byToken("next","shift");
             break;
         case "shiftPrevToken":
-            byToken("prev",true);
+            byToken("prev","shift");
             break;    
         case "nextChar":
             byChar("next");
@@ -41,10 +41,10 @@ export function modAll(modifier: string) {
             byChar("prev");
             break;
         case "shiftNextChar":
-            byChar("next",true);
+            byChar("next","shift");
             break;
         case "shiftPrevChar":
-            byChar("prev",true);
+            byChar("prev","shift");
             break;
         case "end":
             end();
@@ -53,10 +53,10 @@ export function modAll(modifier: string) {
             home();
             break;
         case "shiftEnd":
-            end(true);
+            end("shift");
             break;
         case "shiftHome":
-            home(true);
+            home("shift");
             break;
 
 
@@ -72,7 +72,7 @@ export function modAll(modifier: string) {
 
 function byToken(
     dir: "prev" | "next",
-    shift:boolean=false
+    shift:"shift" | "replace"="replace"
 ) {
 
 
@@ -121,11 +121,12 @@ function byToken(
         );
     }
 
-    moveTempCursor(new TempCursor(newRange.start,editor),shift);
+    
+    setSecondaryCursor(new TempCursor(newRange.start,editor),shift);
     
 }
 
-function home(shift:boolean=false) {
+function home(shift:"shift" | "replace"="replace") {
     let cursor = getSecondaryCursor();
     if(cursor === null){
         return;
@@ -141,10 +142,10 @@ function home(shift:boolean=false) {
     if (match && match.index && match.index !== cursorPos.character) {
         startOfLine = new vscode.Position(startOfLine.line, match.index);
     }
-    moveTempCursor(new TempCursor(startOfLine,editor),shift); 
+    setSecondaryCursor(new TempCursor(startOfLine,editor),shift); 
 }
 
-function end(shift:boolean=false) {
+function end(shift:"shift" | "replace"="replace") {
     let cursor = getSecondaryCursor();
     if(cursor === null){
         return;
@@ -154,12 +155,12 @@ function end(shift:boolean=false) {
     
     let line = cursorPos.line;
     let end = editor.document.lineAt(line).range.end;
-    moveTempCursor(new TempCursor(end,editor),shift);
+    setSecondaryCursor(new TempCursor(end,editor),shift);
 
 
 }
 
-function verticalMove(dir: "up" | "down",shift:boolean=false) {
+function verticalMove(dir: "up" | "down",shift:"shift" | "replace"="replace") {
     let cursor = getSecondaryCursor();
     if(cursor === null){
         return;
@@ -172,5 +173,5 @@ function verticalMove(dir: "up" | "down",shift:boolean=false) {
         nextPos = new vscode.Position(cursorPos.line - 1, cursorPos.character);
     }
 
-    moveTempCursor(new TempCursor(nextPos,editor),shift);
+    setSecondaryCursor(new TempCursor(nextPos,editor),shift);
 }
