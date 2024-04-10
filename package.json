@@ -105,6 +105,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "heap": "^0.2.7"
+    "@types/heap": "^0.2.34",
+		"heap": "^0.2.34"
   }
 }
