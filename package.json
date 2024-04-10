@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/Kn0rk/knorkscursorlesskeyboardconfig"
   },
-  "version": "0.0.11",
+  "version": "0.0.12",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -106,6 +106,6 @@
   },
   "dependencies": {
     "@types/heap": "^0.2.34",
-		"heap": "^0.2.34"
+    "heap": "^0.2.34"
   }
 }
