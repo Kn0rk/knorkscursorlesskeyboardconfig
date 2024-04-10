@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { splitDocument } from './splitDocument';
 import { DecoProto, createDecoration } from './createDecorations';
 import { setHat } from '../handler';
 

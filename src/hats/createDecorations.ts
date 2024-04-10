@@ -1,8 +1,7 @@
+import { Model, Solution, solve } from "../ext/yalps";
 import { HatCandidate } from "./splitDocument";
 import * as vscode from 'vscode';
-import { solve } from 'yalps';
-import { lessEq, equalTo, greaterEq, inRange } from "yalps";
-import { Model, Constraint, Coefficients, OptimizationDirection, Options, Solution } from "yalps";
+
 
 
 
@@ -203,7 +202,7 @@ export function createDecoration(text: vscode.TextDocument, cursorPos:vscode.Pos
 
             }
         }
-        console.log(iLine);
+        
     }
 
 
