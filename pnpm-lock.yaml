@@ -5,11 +5,14 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  yalps:
-    specifier: ^0.5.6
-    version: 0.5.6
+  heap:
+    specifier: ^0.2.7
+    version: 0.2.7
 
 devDependencies:
+  '@types/heap':
+    specifier: ^0.2.34
+    version: 0.2.34
   '@types/mocha':
     specifier: ^10.0.6
     version: 10.0.6
@@ -799,6 +802,10 @@ packages:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
       '@types/node': 18.19.4
+    dev: true
+
+  /@types/heap@0.2.34:
+    resolution: {integrity: sha512-x9gp0NZnQeFrgrb6O3Tq5KtvsuEhWbc2vlHfs4cDOKcHsanzI39lIGcPdND/MRyaKUbxNgKXfKGCQGnjjOWweQ==}
     dev: true
 
   /@types/istanbul-lib-coverage@2.0.6:
@@ -3389,12 +3396,6 @@ packages:
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
     dev: true
-
-  /yalps@0.5.6:
-    resolution: {integrity: sha512-pqjmZGtEBAYuTR03G8SWVvR9vAyBBfSKup82CEJRx2Bta5j/1fRT29kwYdL2NaensQ5ugrYGLdHupNsYWPKGQg==}
-    dependencies:
-      heap: 0.2.7
-    dev: false
 
   /yargs-parser@20.2.4:
     resolution: {integrity: sha512-WOkpgNhPTlE73h4VFAFsOnomJVaovO8VqLDzy5saChRBFQFBoMYirowyW+Q9HB4HFF4Z7VZTiG3iSzJJA29yRA==}
