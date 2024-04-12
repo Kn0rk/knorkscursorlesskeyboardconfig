@@ -73,7 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('kckc.modAllSelections', modAll);
 	context.subscriptions.push(disposable);
 
-	disposable = vscode.commands.registerCommand('kckc.makeTempSelectionActive', makeTempSelectionActive);
+	disposable = vscode.commands.registerCommand('kckc.makeSecondarySelectionActive', makeTempSelectionActive);
 	context.subscriptions.push(disposable);
 			
 	disposable = vscode.commands.registerCommand('kckc.setUserMode', setUserMode);
